@@ -29,7 +29,7 @@ public class ServoCtlPiComImpl implements ServoCtlPiCom, InitializingBean {
     private static final int BUFFER_SIZE = SIZE_OF_MC + computeDataLength(MAX_NUM);
 
     private static final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE)
-            .order(ByteOrder.BIG_ENDIAN);
+            .order(ByteOrder.LITTLE_ENDIAN);
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
