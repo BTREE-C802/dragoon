@@ -60,7 +60,7 @@ public class ServoCtlPiComImpl implements ServoCtlPiCom, InitializingBean {
 
             buffer.flip();
             try {
-                piSerial.write(buffer);
+                piSerial.write(debug(buffer));
             } catch (IOException cause) {
                 throw new PiComException(getType(), cause);
             } finally {
@@ -68,8 +68,21 @@ public class ServoCtlPiComImpl implements ServoCtlPiCom, InitializingBean {
             }
         }
 
-
     }
+
+    private ByteBuffer debug(ByteBuffer buffer) {
+        final byte[] data = new byte[buffer.remaining()];
+        buffer.get(data);
+        final StringBuilder sb = new StringBuilder();
+        for (byte b : data) {
+            sb.append(Integer.toHexString(b)).append("|");
+        }
+        sb.append("\n");
+        logger.info("DATA={}",sb.toString());
+
+        return ByteBuffer.wrap(data);
+    }
+
 
     // 计算指令的数据长度
     private static short computeDataLength(int num) {
