@@ -108,9 +108,9 @@ public class ServoCtlPiComImpl implements ServoCtlPiCom, InitializingBean {
                 new SerialConfig()
                         .device(SerialPort.getDefaultPort())
                         .baud(Baud._9600)
-                        .dataBits(DataBits._8)
-                        .parity(Parity.NONE)
-                        .flowControl(FlowControl.NONE)
+                        //.dataBits(DataBits._8)
+                        //.parity(Parity.NONE)
+                        //.flowControl(FlowControl.NONE)
         );
     }
 
