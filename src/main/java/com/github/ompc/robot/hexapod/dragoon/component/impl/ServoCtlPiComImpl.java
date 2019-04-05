@@ -2,7 +2,10 @@ package com.github.ompc.robot.hexapod.dragoon.component.impl;
 
 import com.github.ompc.robot.hexapod.dragoon.component.PiComException;
 import com.github.ompc.robot.hexapod.dragoon.component.ServoCtlPiCom;
-import com.pi4j.io.serial.*;
+import com.pi4j.io.serial.Baud;
+import com.pi4j.io.serial.Serial;
+import com.pi4j.io.serial.SerialConfig;
+import com.pi4j.io.serial.SerialPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -13,9 +16,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @Component
 public class ServoCtlPiComImpl implements ServoCtlPiCom, InitializingBean {
@@ -97,8 +97,11 @@ public class ServoCtlPiComImpl implements ServoCtlPiCom, InitializingBean {
         );
     }
 
-    private short computeAngle(int angle) {
-        return (short) angle;
+    private short computeAngle(float angle) {
+        final int pwMin = 500;
+        final int pwMax = 2500;
+        final double apRate = (pwMax - pwMin) / 180.0;
+        return (short) (pwMin + angle * apRate);
     }
 
 
@@ -108,9 +111,6 @@ public class ServoCtlPiComImpl implements ServoCtlPiCom, InitializingBean {
                 new SerialConfig()
                         .device(SerialPort.getDefaultPort())
                         .baud(Baud._9600)
-                        //.dataBits(DataBits._8)
-                        //.parity(Parity.NONE)
-                        //.flowControl(FlowControl.NONE)
         );
     }
 

@@ -2,6 +2,9 @@ package test.com.github.ompc.robot.hexapod.dragoon;
 
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -21,14 +24,14 @@ public class TestCase {
     @Test
     public void test() {
         final ByteBuffer buffer = ByteBuffer.allocate(1024).order(ByteOrder.LITTLE_ENDIAN);
-        for (int index = 0; index < 10; index++) {
+        for (int index = 0; index < 1; index++) {
             buffer.put(MAGIC_CODE)
                     .put(computeDataLength(1))
                     .put(CMD_SERVO_MOVE)
                     .put((byte) 1)
                     .putShort((short) 1000)
-                    .put((byte)1)
-                    .putShort((short)2000);
+                    .put((byte) 1)
+                    .putShort((short) 2000);
             buffer.flip();
 
             try {
@@ -43,9 +46,6 @@ public class TestCase {
     private void write(final ByteBuffer buffer) {
         final byte[] src = new byte[buffer.remaining()];
         buffer.get(src);
-        for (byte b : src) {
-            //System.out.println(String.format("%x", b));
-        }
     }
 
     private ByteBuffer debug(ByteBuffer buffer) {
