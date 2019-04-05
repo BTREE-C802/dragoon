@@ -96,8 +96,8 @@ public class ServoCtlPiComImpl implements ServoCtlPiCom, InitializingBean {
         );
     }
 
-    private short computeAngle(float angle) {
-        return (short) (angle * 100);
+    private short computeAngle(int angle) {
+        return (short) angle;
     }
 
 

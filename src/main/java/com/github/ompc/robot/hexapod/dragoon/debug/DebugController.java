@@ -20,10 +20,10 @@ public class DebugController {
     @RequestMapping(method = GET, value = "/servo/{idx}/{angle}")
     @ResponseBody
     public String servoCtl(final @PathVariable("idx") int index,
-                           final @PathVariable("angle") float angle,
+                           final @PathVariable("angle") int angle,
                            final @RequestParam("duration") long durationMs) throws PiComException {
         servoCtlPiCom.control(durationMs, new ServoCtlPiCom.ServoCmd(index, angle));
-        return String.format("SUCCESS:idx=%s;angle=%f;duration=%s;", index, angle, durationMs);
+        return String.format("SUCCESS:idx=%d;angle=%d;duration=%d;", index, angle, durationMs);
     }
 
 }

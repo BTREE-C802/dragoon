@@ -23,7 +23,7 @@ public interface ServoCtlPiCom extends PiCom {
         private final int index;
 
         // 目标角度
-        private final float angle;
+        private final int angle;
 
         /**
          * 构造舵机命令
@@ -31,7 +31,7 @@ public interface ServoCtlPiCom extends PiCom {
          * @param index 舵机编号
          * @param angle 旋转目标角度
          */
-        public ServoCmd(int index, float angle) {
+        public ServoCmd(int index, int angle) {
             this.index = index;
             this.angle = angle;
         }
@@ -50,7 +50,7 @@ public interface ServoCtlPiCom extends PiCom {
          *
          * @return 旋转目标角度
          */
-        public float getAngle() {
+        public int getAngle() {
             return angle;
         }
     }
