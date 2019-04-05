@@ -65,6 +65,7 @@ public class ServoCtlPiComImpl implements ServoCtlPiCom, InitializingBean {
             try {
                 debug(buffer);
                 piSerial.write(buffer);
+                piSerial.flush();
             } catch (IOException cause) {
                 throw new PiComException(getType(), cause);
             } finally {
