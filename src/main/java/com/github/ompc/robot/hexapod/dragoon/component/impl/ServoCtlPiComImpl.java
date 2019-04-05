@@ -13,6 +13,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Component
 public class ServoCtlPiComImpl implements ServoCtlPiCom, InitializingBean {
@@ -50,7 +53,7 @@ public class ServoCtlPiComImpl implements ServoCtlPiCom, InitializingBean {
 
         synchronized (buffer) {
             buffer.put(MAGIC_CODE)
-                    .putShort(computeDataLength(servoCmds.length))
+                    .put(computeDataLength(servoCmds.length))
                     .put(CMD_SERVO_MOVE)
                     .put((byte) servoCmds.length)
                     .putShort((short) durationMs);
@@ -60,33 +63,32 @@ public class ServoCtlPiComImpl implements ServoCtlPiCom, InitializingBean {
 
             buffer.flip();
             try {
-                piSerial.write(debug(buffer));
+                debug(buffer);
+                piSerial.write(buffer);
             } catch (IOException cause) {
                 throw new PiComException(getType(), cause);
             } finally {
-                buffer.clear();
+                buffer.flip();
             }
         }
 
     }
 
-    private ByteBuffer debug(ByteBuffer buffer) {
+    private void debug(ByteBuffer buffer) {
         final byte[] data = new byte[buffer.remaining()];
         buffer.get(data);
         final StringBuilder sb = new StringBuilder();
         for (byte b : data) {
-            sb.append(Integer.toHexString(b)).append("|");
+            sb.append(String.format("0x%02x", b)).append("|");
         }
-        sb.append("\n");
-        logger.info("DATA={}",sb.toString());
-
-        return ByteBuffer.wrap(data);
+        logger.info("piSerial.write:{}", sb.toString());
+        buffer.position(buffer.position() - data.length);
     }
 
 
     // 计算指令的数据长度
-    private static short computeDataLength(int num) {
-        return (short) (
+    private static byte computeDataLength(int num) {
+        return (byte) (
                 SIZE_OF_DATA_LENGTH
                         + SIZE_OF_NUM
                         + SIZE_OF_DURATION
