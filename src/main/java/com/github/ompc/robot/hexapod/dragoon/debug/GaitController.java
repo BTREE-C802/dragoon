@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Joint.*;
@@ -25,12 +26,12 @@ public class GaitController {
 
     @RequestMapping(method = GET, value = "/gait/reset")
     @ResponseBody
-    public String servoCtl() {
+    public String reset(final @RequestParam("duration") long durationMs) {
 
         gaitCtlCom.execute(
                 new GaitBuilder()
                         .append(
-                                1000,
+                                durationMs,
                                 poses(new Joint[]{HIP, KNE}, 90),
                                 poses(new Joint[]{ANK}, 0)
                         )
