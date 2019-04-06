@@ -14,7 +14,7 @@ public class GaitBuilder {
     private Gait appendGaitAtLast(Gait gait) {
         final Gait last;
         if (null == gait) {
-            last = gait = new Gait();
+            last = new Gait();
         } else {
             if (gait.hasNext()) {
                 last = appendGaitAtLast(gait.getNext());
@@ -25,9 +25,18 @@ public class GaitBuilder {
         return last;
     }
 
+    private Gait last(Gait gait) {
+        return gait.hasNext()
+                ? last(gait.getNext())
+                : gait;
+    }
+
     public GaitBuilder append(final long durationMs,
                               final Pose... poses) {
-        final Gait last = appendGaitAtLast(gait);
+        if (null == gait) {
+            gait = new Gait();
+        }
+        final Gait last = last(gait);
         last.setDurationMs(durationMs);
         last.getPoses().addAll(Arrays.asList(poses));
         return this;
