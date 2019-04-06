@@ -1,7 +1,7 @@
-package com.github.ompc.robot.hexapod.dragoon.component.impl;
+package com.github.ompc.robot.hexapod.dragoon.device.impl;
 
-import com.github.ompc.robot.hexapod.dragoon.component.PiComException;
-import com.github.ompc.robot.hexapod.dragoon.component.ServoCtlPiCom;
+import com.github.ompc.robot.hexapod.dragoon.device.PiDevException;
+import com.github.ompc.robot.hexapod.dragoon.device.ServoCtlPiDev;
 import com.pi4j.io.serial.Baud;
 import com.pi4j.io.serial.Serial;
 import com.pi4j.io.serial.SerialConfig;
@@ -18,7 +18,7 @@ import java.nio.ByteOrder;
 import java.util.Arrays;
 
 @Component
-public class ServoCtlPiComImpl implements ServoCtlPiCom, InitializingBean {
+public class ServoCtlPiDevImpl implements ServoCtlPiDev, InitializingBean {
 
     private static final byte[] MAGIC_CODE = {0x55, 0x55};
     private static final byte CMD_SERVO_MOVE = 0x03;
@@ -40,7 +40,7 @@ public class ServoCtlPiComImpl implements ServoCtlPiCom, InitializingBean {
     private Serial piSerial;
 
     @Override
-    public void control(long durationMs, ServoCmd... servoCmds) throws PiComException {
+    public void control(long durationMs, ServoCmd... servoCmds) throws PiDevException {
 
         if (null == servoCmds
                 || servoCmds.length == 0) {
@@ -67,7 +67,7 @@ public class ServoCtlPiComImpl implements ServoCtlPiCom, InitializingBean {
                 piSerial.write(buffer);
                 piSerial.flush();
             } catch (IOException cause) {
-                throw new PiComException(getType(), cause);
+                throw new PiDevException(getType(), cause);
             } finally {
                 buffer.flip();
             }
@@ -97,6 +97,7 @@ public class ServoCtlPiComImpl implements ServoCtlPiCom, InitializingBean {
         );
     }
 
+    // 计算舵机角度和脉宽的换算(角度->脉宽)
     private short computeAngle(float angle) {
         final int pwMin = 500;
         final int pwMax = 2500;

@@ -1,18 +1,18 @@
-package com.github.ompc.robot.hexapod.dragoon.component;
+package com.github.ompc.robot.hexapod.dragoon.device;
 
 /**
  * 舵机控制组件
  */
-public interface ServoCtlPiCom extends PiCom {
+public interface ServoCtlPiDev extends PiDev {
 
     /**
      * 控制舵机
      *
      * @param durationMs 控制持续时间（MS)
      * @param servoCmds  具体舵机控制转动角度集合
-     * @throws PiComException 组件执行动作失败
+     * @throws PiDevException 组件执行动作失败
      */
-    void control(long durationMs, ServoCmd... servoCmds) throws PiComException;
+    void control(long durationMs, ServoCmd... servoCmds) throws PiDevException;
 
     /**
      * 舵机命令

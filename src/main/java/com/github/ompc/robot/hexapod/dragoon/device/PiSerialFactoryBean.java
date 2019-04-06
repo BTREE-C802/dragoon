@@ -1,4 +1,4 @@
-package com.github.ompc.robot.hexapod.dragoon.bean;
+package com.github.ompc.robot.hexapod.dragoon.device;
 
 import com.pi4j.io.serial.Serial;
 import com.pi4j.io.serial.SerialFactory;

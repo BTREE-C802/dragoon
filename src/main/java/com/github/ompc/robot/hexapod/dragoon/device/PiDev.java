@@ -1,9 +1,9 @@
-package com.github.ompc.robot.hexapod.dragoon.component;
+package com.github.ompc.robot.hexapod.dragoon.device;
 
 /**
  * 树莓派组件接口
  */
-public interface PiCom {
+public interface PiDev {
 
     Type getType();
 
