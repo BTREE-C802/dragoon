@@ -9,9 +9,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 
@@ -26,7 +24,7 @@ public class GaitCtlComImpl implements GaitCtlCom, Runnable, InitializingBean {
     private final GaitServoMapper gaitServoMapper = new GaitServoMapper();
 
     // 步态控制队列
-    private final Queue<GaitWrap> gaitWrapQueue = new LinkedBlockingQueue<>();
+    private final LinkedBlockingQueue<GaitWrap> gaitWrapQueue = new LinkedBlockingQueue<>();
 
     @Override
     public void execute(Gait gait, CompletedCallback callback) {
@@ -70,27 +68,26 @@ public class GaitCtlComImpl implements GaitCtlCom, Runnable, InitializingBean {
 
         for (; ; ) {
 
-            final GaitWrap gaitWrap = gaitWrapQueue.poll();
-            if(null == gaitWrap) {
-                continue;
-            }
-
             try {
+                final GaitWrap gaitWrap = gaitWrapQueue.take();
                 Gait gait = gaitWrap.gait;
                 do {
-                    servoCtlPiDev.control(gait.getDurationMs(), getCmds(gait));
+                    servoCtlPiDev.control(
+                            gait.getDurationMs(),
+                            getCmds(gait)
+                    );
                 } while (gait.hasNext() && (gait = gait.getNext()) != null);
+
+                // callback
+                if (null != gaitWrap.callback) {
+                    try {
+                        gaitWrap.callback.onCompleted(false);
+                    } catch (Exception cause) {
+                        logger.warn("gait execute completed fire occur error!", cause);
+                    }
+                }
             } catch (Exception cause) {
                 logger.warn("gait execute failed.", cause);
-            }
-
-
-            if (null != gaitWrap.callback) {
-                try {
-                    gaitWrap.callback.onCompleted(false);
-                } catch (Exception cause) {
-                    logger.warn("gait execute completed fire occur error!", cause);
-                }
             }
 
         }
