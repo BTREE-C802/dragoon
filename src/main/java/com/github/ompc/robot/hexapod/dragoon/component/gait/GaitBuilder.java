@@ -14,7 +14,7 @@ public class GaitBuilder {
     private Gait appendGaitAtLast(Gait gait) {
         final Gait last;
         if (null == gait) {
-            last = new Gait();
+            last = gait = new Gait();
         } else {
             if (gait.hasNext()) {
                 last = appendGaitAtLast(gait.getNext());
