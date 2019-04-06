@@ -72,7 +72,7 @@ public class GaitCtlComImpl implements GaitCtlCom, Runnable, InitializingBean {
 
             final GaitWrap gaitWrap = gaitWrapQueue.poll();
             if(null == gaitWrap) {
-                return;
+                continue;
             }
 
             try {
