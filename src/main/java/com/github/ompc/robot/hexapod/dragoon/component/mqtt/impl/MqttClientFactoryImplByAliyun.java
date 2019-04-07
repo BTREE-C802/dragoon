@@ -25,7 +25,7 @@ public class MqttClientFactoryImplByAliyun implements MqttClientFactory {
         mqttConnectOptions.setPassword(config.getMqttPassword());
         mqttConnectOptions.setMqttVersion(MQTT_VERSION_3_1_1);
         mqttConnectOptions.setAutomaticReconnect(true);
-        mqttConnectOptions.setCleanSession(true);
+        mqttConnectOptions.setCleanSession(false);
         mqttConnectOptions.setKeepAliveInterval(60);
         return mqttConnectOptions;
     }

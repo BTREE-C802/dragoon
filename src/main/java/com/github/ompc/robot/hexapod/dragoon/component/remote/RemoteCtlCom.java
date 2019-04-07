@@ -1,5 +1,6 @@
 package com.github.ompc.robot.hexapod.dragoon.component.remote;
 
+import com.github.ompc.robot.hexapod.dragoon.component.EnvCom;
 import com.github.ompc.robot.hexapod.dragoon.component.gait.Gait;
 import com.github.ompc.robot.hexapod.dragoon.component.gait.GaitCtlCom;
 import com.github.ompc.robot.hexapod.dragoon.component.mqtt.messenger.Messenger;
@@ -33,6 +34,9 @@ public class RemoteCtlCom extends TextMessageListener implements InitializingBea
     @Value("${dragoon.mqtt.aliyun.device-name}")
     private String deviceName;
 
+    @Autowired
+    private EnvCom envCom;
+
     private final Gson gson = new GsonBuilder()
             .create();
 
@@ -55,10 +59,12 @@ public class RemoteCtlCom extends TextMessageListener implements InitializingBea
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        messenger.subscribe(
-                String.format("/%s/%s/user/messenger/test/post", productKey, deviceName),
-                this
-        );
+        if(envCom.isProd()) {
+            messenger.subscribe(
+                    String.format("/%s/%s/user/messenger/test/post", productKey, deviceName),
+                    this
+            );
+        }
     }
 
 

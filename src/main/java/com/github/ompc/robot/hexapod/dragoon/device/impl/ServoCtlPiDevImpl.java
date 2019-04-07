@@ -1,5 +1,6 @@
 package com.github.ompc.robot.hexapod.dragoon.device.impl;
 
+import com.github.ompc.robot.hexapod.dragoon.component.EnvCom;
 import com.github.ompc.robot.hexapod.dragoon.device.PiDevException;
 import com.github.ompc.robot.hexapod.dragoon.device.ServoCtlPiDev;
 import com.pi4j.io.serial.Baud;
@@ -38,6 +39,9 @@ public class ServoCtlPiDevImpl implements ServoCtlPiDev, InitializingBean {
 
     @Autowired
     private Serial piSerial;
+
+    @Autowired
+    private EnvCom envCom;
 
     @Override
     public void control(long durationMs, ServoCmd... servoCmds) throws PiDevException {
@@ -108,16 +112,15 @@ public class ServoCtlPiDevImpl implements ServoCtlPiDev, InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        try {
+        if (envCom.isProd()) {
             piSerial.open(
                     new SerialConfig()
                             .device(SerialPort.getDefaultPort())
                             .baud(Baud._9600)
             );
-        } catch (Exception cause) {
+        } else if (envCom.isTest()) {
             piSerial = new MockPiSerial();
         }
-
     }
 
     @Override

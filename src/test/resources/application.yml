@@ -16,6 +16,8 @@ spring:
 ###
 dragoon:
 
+  env: TEST
+
   # MQTT
   mqtt:
     server: tcp://${dragoon.mqtt.aliyun.product-key}.iot-as-mqtt.cn-shanghai.aliyuncs.com:1883

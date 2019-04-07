@@ -32,17 +32,13 @@ public class GaitTestCase extends SpringBootSupportTestCase {
     private Messenger messenger;
 
     @Test
-    public void test() throws MessageComException {
+    public void test() throws MessageComException, InterruptedException {
 
         final Gait gait = new GaitBuilder()
                 .append(
-                        500,
-                        poses(new Leg[]{R_H}, new Joint[]{ANK}, 270)
-                )
-                .append(
                         1000,
                         poses(new Joint[]{HIP, KNE}, 90),
-                        poses(new Joint[]{ANK}, 0)
+                        poses(new Joint[]{ANK}, 90)
                 )
                 .build();
 
@@ -56,6 +52,7 @@ public class GaitTestCase extends SpringBootSupportTestCase {
         );
 
 
+        Thread.sleep(1000*10L);
     }
 
 }
