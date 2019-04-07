@@ -1,6 +1,8 @@
 package com.github.ompc.robot.hexapod.dragoon.device.impl;
 
 import com.pi4j.io.serial.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +15,9 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public class MockPiSerial implements Serial {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     @Override
     public void open(String device, int baud, int dataBits, int parity, int stopBits, int flowControl) throws IOException {
 
@@ -244,10 +249,20 @@ public class MockPiSerial implements Serial {
     }
 
     @Override
-    public void write(ByteBuffer... datas) throws IllegalStateException, IOException {
+    public void write(ByteBuffer... datas) throws IllegalStateException {
         Arrays.stream(datas).forEach(data -> {
-            data.get(new byte[data.remaining()]);
+            final byte[] dataArray = new byte[data.remaining()];
+            data.get(dataArray);
+            logForWrite(dataArray);
         });
+    }
+
+    private void logForWrite(byte[] dataArray) {
+        final StringBuilder dataSB = new StringBuilder("|");
+        for (byte data : dataArray) {
+            dataSB.append(String.format("0x%02x", data)).append("|");
+        }
+        logger.info("piSerial-write:{}", dataSB);
     }
 
     @Override

@@ -11,11 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Joint.*;
-import static com.github.ompc.robot.hexapod.dragoon.component.gait.Leg.L_F;
-import static com.github.ompc.robot.hexapod.dragoon.component.gait.Leg.R_F;
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.Leg.*;
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Pose.poses;
 
-@Ignore
 public class GaitTestCase extends SpringBootSupportTestCase {
 
     private final Gson gson = new GsonBuilder()
@@ -30,6 +28,9 @@ public class GaitTestCase extends SpringBootSupportTestCase {
 
     @Autowired
     private Messenger messenger;
+
+    @Autowired
+    private GaitCtlCom gaitCtlCom;
 
     @Test
     public void test() throws MessageComException, InterruptedException {
@@ -52,19 +53,25 @@ public class GaitTestCase extends SpringBootSupportTestCase {
 
                 // HIGH
                 .append(
-                        2000,
-                        poses(new Joint[]{KNE,ANK}, 45)
+                        20,
+                        poses(new Joint[]{KNE,ANK}, 45),
+                        poses(new Joint[]{HIP}, 90)
                 )
 
                 // RESET
                 .append(
-                        2000,
+                        20,
                         poses(new Joint[]{HIP, KNE}, 90),
                         poses(new Joint[]{ANK}, 0)
                 )
 
-                .build();
+                .append(10, new Pose(L_H, HIP, 180))
+                .append(10,
+                        new Pose(L_H, KNE, 180),
+                        new Pose(L_F, ANK, 180)
+                )
 
+                .build();
 
         final String json = gson.toJson(gait);
 
