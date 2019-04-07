@@ -69,12 +69,12 @@ public class ServoCtlPiDevImpl implements ServoCtlPiDev, InitializingBean {
 
             buffer.flip();
             try {
-                piSerial.write(buffer);
+                while (buffer.hasRemaining()) {
+                    piSerial.write(buffer);
+                }
                 piSerial.flush();
             } catch (IOException cause) {
                 throw new PiDevException(getType(), cause);
-            } finally {
-                buffer.flip();
             }
         }
 

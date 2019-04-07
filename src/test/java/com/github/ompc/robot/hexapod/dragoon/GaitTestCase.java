@@ -5,6 +5,7 @@ import com.github.ompc.robot.hexapod.dragoon.component.mqtt.messenger.MessageCom
 import com.github.ompc.robot.hexapod.dragoon.component.mqtt.messenger.Messenger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,7 @@ import static com.github.ompc.robot.hexapod.dragoon.component.gait.Leg.L_F;
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Leg.R_F;
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Pose.poses;
 
+@Ignore
 public class GaitTestCase extends SpringBootSupportTestCase {
 
     private final Gson gson = new GsonBuilder()
@@ -33,11 +35,8 @@ public class GaitTestCase extends SpringBootSupportTestCase {
     public void test() throws MessageComException, InterruptedException {
 
         final Gait gait = new GaitBuilder()
-                .append(
-                        4000,
-                        poses(new Joint[]{HIP, KNE}, 90),
-                        poses(new Joint[]{ANK}, 0)
-                )
+
+//                // TEST
 //                .append(
 //                        2000,
 //                        Pose.poses(new Leg[]{R_F, L_F}, new Joint[]{ANK}, 45)
@@ -50,6 +49,20 @@ public class GaitTestCase extends SpringBootSupportTestCase {
 //                        2000,
 //                        Pose.poses(new Leg[]{R_F, L_F}, new Joint[]{ANK}, 90)
 //                )
+
+                // HIGH
+                .append(
+                        2000,
+                        poses(new Joint[]{KNE,ANK}, 45)
+                )
+
+                // RESET
+                .append(
+                        2000,
+                        poses(new Joint[]{HIP, KNE}, 90),
+                        poses(new Joint[]{ANK}, 0)
+                )
+
                 .build();
 
 
