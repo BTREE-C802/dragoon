@@ -33,12 +33,17 @@ public class GaitBuilder {
 
     public GaitBuilder append(final long durationMs,
                               final Pose... poses) {
+        final Gait current;
         if (null == gait) {
-            gait = new Gait();
+            gait = current = new Gait();
+        } else {
+            final Gait last = last(gait);
+            current = new Gait();
+            last.setNext(current);
         }
-        final Gait last = last(gait);
-        last.setDurationMs(durationMs);
-        last.getPoses().addAll(Arrays.asList(poses));
+
+        current.setDurationMs(durationMs);
+        current.getPoses().addAll(Arrays.asList(poses));
         return this;
     }
 

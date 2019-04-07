@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 
@@ -26,6 +29,9 @@ public class GaitCtlComImpl implements GaitCtlCom, Runnable, InitializingBean {
     // 步态控制队列
     private final LinkedBlockingQueue<GaitWrap> gaitWrapQueue = new LinkedBlockingQueue<>();
 
+    private final ReentrantLock waitingLock = new ReentrantLock();
+    private final Condition waitingCompleteCondition = waitingLock.newCondition();
+
     @Override
     public void execute(Gait gait, CompletedCallback callback) {
         gaitWrapQueue.offer(new GaitWrap(gait, callback));
@@ -33,6 +39,23 @@ public class GaitCtlComImpl implements GaitCtlCom, Runnable, InitializingBean {
 
     @Override
     public void interrupt() {
+
+        // 清理仍然在步态队列中等待执行的步态
+        while (true) {
+            final GaitWrap gaitWrap = gaitWrapQueue.poll();
+            if (null == gaitWrap) {
+                break;
+            }
+            gaitWrap.callback.onCompleted(Response.interrupted());
+        }
+
+        // 通知仍然在等待命令完成的LOOP跳出命令等待
+        waitingLock.lock();
+        try {
+            waitingCompleteCondition.signal();
+        } finally {
+            waitingLock.unlock();
+        }
 
     }
 
@@ -66,29 +89,67 @@ public class GaitCtlComImpl implements GaitCtlCom, Runnable, InitializingBean {
 
         logger.info("{} started!", Thread.currentThread().getName());
 
-        for (; ; ) {
+        while (true) {
 
             try {
-                final GaitWrap gaitWrap = gaitWrapQueue.take();
-                Gait gait = gaitWrap.gait;
-                do {
-                    servoCtlPiDev.control(
-                            gait.getDurationMs(),
-                            getCmds(gait)
-                    );
-                } while (gait.hasNext() && (gait = gait.getNext()) != null);
 
-                // callback
-                if (null != gaitWrap.callback) {
-                    try {
-                        gaitWrap.callback.onCompleted(false);
-                    } catch (Exception cause) {
-                        logger.warn("gait execute completed fire occur error!", cause);
+                final GaitWrap gaitWrap = gaitWrapQueue.take();
+                boolean isInterrupted = false;
+                try {
+                    Gait gait = gaitWrap.gait;
+
+                    /*
+                     * 执行步态(组)
+                     */
+                    do {
+
+                        /*
+                         * 发送舵机命令
+                         */
+                        servoCtlPiDev.control(
+                                gait.getDurationMs(),
+                                getCmds(gait)
+                        );
+
+                        /*
+                         * 等待舵机命令完成
+                         * 因为这台机器的舵机控制没有回馈信号，所以程序不知道什么时候命令完成
+                         * 这里根据步态的执行时间做一个短暂的休眠
+                         */
+                        waitingLock.lock();
+                        try {
+                            waitingCompleteCondition.await(gait.getDurationMs(), TimeUnit.MILLISECONDS);
+                        } catch (InterruptedException ie) {
+                            isInterrupted = true;
+                            break;
+                        } finally {
+                            waitingLock.unlock();
+                        }
+
+                    } while (gait.hasNext() && (gait = gait.getNext()) != null);
+
+                    // 步态执行完成回馈
+                    if (null != gaitWrap.callback) {
+                        try {
+                            gaitWrap.callback.onCompleted(
+                                    isInterrupted
+                                            ? Response.interrupted()
+                                            : Response.success()
+                            );
+                        } catch (Exception cause) {
+                            logger.warn("gait execute completed fire occur error!", cause);
+                        }
                     }
-                }
+
+                } catch (Exception causeOfControl) {
+                    if (null != gaitWrap.callback) {
+                        gaitWrap.callback.onCompleted(Response.exception(causeOfControl));
+                    }
+                } // try-catch for gait
+
             } catch (Exception cause) {
                 logger.warn("gait execute failed.", cause);
-            }
+            } // try-catch for LOOP
 
         }
 
