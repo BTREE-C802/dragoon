@@ -1,0 +1,30 @@
+###
+# Spring Settings
+###
+spring:
+
+  ###
+  # Jackson Settings
+  ###
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+
+
+###
+# ALIYUN-MQTT
+###
+dragoon:
+
+  # MQTT
+  mqtt:
+    server: tcp://${prober.mqtt.aliyun.product-key}.iot-as-mqtt.cn-shanghai.aliyuncs.com:1883
+    client-id: TEST-DEVICE-001
+    connecting-timeout-sec: 60
+    publish-timeout-ms: 10000
+    aliyun:
+      product-key: a1nkrAMWQ3k
+      device-name: raspberrypi-test
+      device-secret: YzIFftE5QN5D0McGMQ2Ou7q9YsmKdfri
+
+
