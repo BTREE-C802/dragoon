@@ -1,4 +1,4 @@
-package test.com.github.ompc.robot.hexapod.dragoon;
+package com.github.ompc.robot.hexapod.dragoon;
 
 import com.github.ompc.robot.hexapod.dragoon.component.gait.Gait;
 import com.github.ompc.robot.hexapod.dragoon.component.gait.GaitBuilder;

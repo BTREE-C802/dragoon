@@ -108,11 +108,16 @@ public class ServoCtlPiDevImpl implements ServoCtlPiDev, InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        piSerial.open(
-                new SerialConfig()
-                        .device(SerialPort.getDefaultPort())
-                        .baud(Baud._9600)
-        );
+        try {
+            piSerial.open(
+                    new SerialConfig()
+                            .device(SerialPort.getDefaultPort())
+                            .baud(Baud._9600)
+            );
+        } catch (Exception cause) {
+            piSerial = new MockPiSerial();
+        }
+
     }
 
     @Override

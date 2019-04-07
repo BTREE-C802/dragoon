@@ -1,4 +1,4 @@
-package test.com.github.ompc.robot.hexapod.dragoon;
+package com.github.ompc.robot.hexapod.dragoon;
 
 import org.junit.Test;
 
