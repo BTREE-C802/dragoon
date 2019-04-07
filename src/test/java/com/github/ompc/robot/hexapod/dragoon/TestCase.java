@@ -23,7 +23,8 @@ public class TestCase {
 
     @Test
     public void test() {
-        final ByteBuffer buffer = ByteBuffer.allocate(1024).order(ByteOrder.LITTLE_ENDIAN);
+        System.out.println(BUFFER_SIZE);
+        final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN);
         for (int index = 0; index < 1; index++) {
             buffer.put(MAGIC_CODE)
                     .put(computeDataLength(1))

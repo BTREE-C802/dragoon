@@ -33,23 +33,23 @@ public class GaitTestCase extends SpringBootSupportTestCase {
     public void test() throws MessageComException, InterruptedException {
 
         final Gait gait = new GaitBuilder()
+                .append(
+                        4000,
+                        poses(new Joint[]{HIP, KNE}, 90),
+                        poses(new Joint[]{ANK}, 0)
+                )
 //                .append(
-//                        4000,
-//                        poses(new Joint[]{HIP, KNE}, 90),
-//                        poses(new Joint[]{ANK}, 90)
+//                        2000,
+//                        Pose.poses(new Leg[]{R_F, L_F}, new Joint[]{ANK}, 45)
 //                )
-                .append(
-                        2000,
-                        Pose.poses(new Leg[]{R_F, L_F}, new Joint[]{ANK}, 45)
-                )
-                .append(
-                        2000,
-                        Pose.poses(new Leg[]{R_F, L_F}, new Joint[]{ANK}, 135)
-                )
-                .append(
-                        2000,
-                        Pose.poses(new Leg[]{R_F, L_F}, new Joint[]{ANK}, 90)
-                )
+//                .append(
+//                        2000,
+//                        Pose.poses(new Leg[]{R_F, L_F}, new Joint[]{ANK}, 135)
+//                )
+//                .append(
+//                        2000,
+//                        Pose.poses(new Leg[]{R_F, L_F}, new Joint[]{ANK}, 90)
+//                )
                 .build();
 
 

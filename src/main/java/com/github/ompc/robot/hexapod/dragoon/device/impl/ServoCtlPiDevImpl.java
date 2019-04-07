@@ -29,7 +29,8 @@ public class ServoCtlPiDevImpl implements ServoCtlPiDev, InitializingBean {
     private static final int SIZE_OF_DATA_LENGTH = 2;
     private static final int SIZE_OF_NUM = 1;
     private static final int SIZE_OF_DURATION = 2;
-    private static final int BUFFER_SIZE = SIZE_OF_MC + computeDataLength(MAX_NUM);
+    private static final int BUFFER_SIZE = 256;
+            // SIZE_OF_MC + computeDataLength(MAX_NUM);
 
     private static final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE)
             .order(ByteOrder.LITTLE_ENDIAN);
