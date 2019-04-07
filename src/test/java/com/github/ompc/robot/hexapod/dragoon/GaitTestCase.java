@@ -1,9 +1,6 @@
 package com.github.ompc.robot.hexapod.dragoon;
 
-import com.github.ompc.robot.hexapod.dragoon.component.gait.Gait;
-import com.github.ompc.robot.hexapod.dragoon.component.gait.GaitBuilder;
-import com.github.ompc.robot.hexapod.dragoon.component.gait.Joint;
-import com.github.ompc.robot.hexapod.dragoon.component.gait.Leg;
+import com.github.ompc.robot.hexapod.dragoon.component.gait.*;
 import com.github.ompc.robot.hexapod.dragoon.component.mqtt.messenger.MessageComException;
 import com.github.ompc.robot.hexapod.dragoon.component.mqtt.messenger.Messenger;
 import com.google.gson.Gson;
@@ -13,7 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Joint.*;
-import static com.github.ompc.robot.hexapod.dragoon.component.gait.Leg.R_H;
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.Leg.L_F;
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.Leg.R_F;
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Pose.poses;
 
 public class GaitTestCase extends SpringBootSupportTestCase {
@@ -35,10 +33,22 @@ public class GaitTestCase extends SpringBootSupportTestCase {
     public void test() throws MessageComException, InterruptedException {
 
         final Gait gait = new GaitBuilder()
+//                .append(
+//                        4000,
+//                        poses(new Joint[]{HIP, KNE}, 90),
+//                        poses(new Joint[]{ANK}, 90)
+//                )
                 .append(
-                        1000,
-                        poses(new Joint[]{HIP, KNE}, 90),
-                        poses(new Joint[]{ANK}, 90)
+                        2000,
+                        Pose.poses(new Leg[]{R_F, L_F}, new Joint[]{ANK}, 45)
+                )
+                .append(
+                        2000,
+                        Pose.poses(new Leg[]{R_F, L_F}, new Joint[]{ANK}, 135)
+                )
+                .append(
+                        2000,
+                        Pose.poses(new Leg[]{R_F, L_F}, new Joint[]{ANK}, 90)
                 )
                 .build();
 
@@ -51,8 +61,6 @@ public class GaitTestCase extends SpringBootSupportTestCase {
                 json.getBytes()
         );
 
-
-        Thread.sleep(1000*10L);
     }
 
 }

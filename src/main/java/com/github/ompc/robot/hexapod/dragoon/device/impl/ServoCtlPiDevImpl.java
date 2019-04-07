@@ -2,13 +2,12 @@ package com.github.ompc.robot.hexapod.dragoon.device.impl;
 
 import com.github.ompc.robot.hexapod.dragoon.component.EnvCom;
 import com.github.ompc.robot.hexapod.dragoon.device.PiDevException;
+import com.github.ompc.robot.hexapod.dragoon.device.PulseWidthComputer;
 import com.github.ompc.robot.hexapod.dragoon.device.ServoCtlPiDev;
 import com.pi4j.io.serial.Baud;
 import com.pi4j.io.serial.Serial;
 import com.pi4j.io.serial.SerialConfig;
 import com.pi4j.io.serial.SerialPort;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,13 +34,14 @@ public class ServoCtlPiDevImpl implements ServoCtlPiDev, InitializingBean {
     private static final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE)
             .order(ByteOrder.LITTLE_ENDIAN);
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
     @Autowired
     private Serial piSerial;
 
     @Autowired
     private EnvCom envCom;
+
+    @Autowired
+    private PulseWidthComputer pulseWidthComputer;
 
     @Override
     public void control(long durationMs, ServoCmd... servoCmds) throws PiDevException {
@@ -62,12 +62,12 @@ public class ServoCtlPiDevImpl implements ServoCtlPiDev, InitializingBean {
                     .put((byte) servoCmds.length)
                     .putShort((short) durationMs);
             Arrays.stream(servoCmds).forEach(cmd -> {
-                buffer.put((byte) cmd.getIndex()).putShort(computeAngle(cmd.getAngle()));
+                buffer.put((byte) cmd.getIndex())
+                        .putShort((short) pulseWidthComputer.compute(cmd.getIndex(), cmd.getAngle()));
             });
 
             buffer.flip();
             try {
-                debug(buffer);
                 piSerial.write(buffer);
                 piSerial.flush();
             } catch (IOException cause) {
@@ -77,17 +77,6 @@ public class ServoCtlPiDevImpl implements ServoCtlPiDev, InitializingBean {
             }
         }
 
-    }
-
-    private void debug(ByteBuffer buffer) {
-        final byte[] data = new byte[buffer.remaining()];
-        buffer.get(data);
-        final StringBuilder sb = new StringBuilder();
-        for (byte b : data) {
-            sb.append(String.format("0x%02x", b)).append("|");
-        }
-        logger.info("piSerial.write:{}", sb.toString());
-        buffer.position(buffer.position() - data.length);
     }
 
 

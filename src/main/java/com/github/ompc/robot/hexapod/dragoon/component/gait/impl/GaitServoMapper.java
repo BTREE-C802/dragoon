@@ -15,29 +15,29 @@ import static com.github.ompc.robot.hexapod.dragoon.component.gait.Leg.*;
  * {@code
  * <p>
  * +-----+-----+----+
- * | R_F | HIP | 01 |
- * | R_F | KNE | 02 |
- * | R_F | ANK | 03 |
+ * | L_H | HIP | 01 |
+ * | L_H | KNE | 02 |
+ * | L_H | ANK | 03 |
  * +-----+-----+----+
- * | R_M | HIP | 04 |
- * | R_M | KNE | 05 |
- * | R_M | ANK | 06 |
+ * | L_M | HIP | 04 |
+ * | L_M | KNE | 05 |
+ * | L_M | ANK | 06 |
  * +-----+-----+----+
- * | R_H | HIP | 07 |
- * | R_H | KNE | 08 |
- * | R_H | ANK | 09 |
+ * | L_F | HIP | 07 |
+ * | L_F | KNE | 08 |
+ * | L_F | ANK | 09 |
  * +-----+-----+----+
- * | L_F | HIP | 16 |
- * | L_F | KNE | 17 |
- * | L_F | ANK | 18 |
+ * | R_F | HIP | 16 |
+ * | R_F | KNE | 17 |
+ * | R_F | ANK | 18 |
  * +-----+-----+----+
- * | L_M | HIP | 13 |
- * | L_M | KNE | 14 |
- * | L_M | ANK | 15 |
+ * | R_M | HIP | 13 |
+ * | R_M | KNE | 14 |
+ * | R_M | ANK | 15 |
  * +-----+-----+----+
- * | L_H | HIP | 10 |
- * | L_H | KNE | 11 |
- * | L_H | ANK | 12 |
+ * | R_H | HIP | 10 |
+ * | R_H | KNE | 11 |
+ * | R_H | ANK | 12 |
  * +-----+-----+----+
  *
  * <p>
