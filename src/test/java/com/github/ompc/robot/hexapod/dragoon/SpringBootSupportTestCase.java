@@ -13,15 +13,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest(classes = DragoonLauncher.class)
 public class SpringBootSupportTestCase {
 
-    @Autowired
-    private ServoCtlPiDev servoCtlPiCom;
 
-    @Test
-    public void test() throws PiDevException {
-        servoCtlPiCom.control(
-                1000,
-                new ServoCtlPiDev.ServoCmd(1, 2000)
-        );
-    }
 
 }
