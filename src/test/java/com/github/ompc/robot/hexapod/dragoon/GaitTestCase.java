@@ -53,24 +53,17 @@ public class GaitTestCase extends SpringBootSupportTestCase {
 
                 // HIGH
                 .append(
-                        20,
+                        2000,
                         poses(new Joint[]{KNE,ANK}, 45),
                         poses(new Joint[]{HIP}, 90)
                 )
 
                 // RESET
                 .append(
-                        20,
+                        2000,
                         poses(new Joint[]{HIP, KNE}, 90),
                         poses(new Joint[]{ANK}, 0)
                 )
-
-                .append(10, new Pose(L_H, HIP, 180))
-                .append(10,
-                        new Pose(L_H, KNE, 180),
-                        new Pose(L_F, ANK, 180)
-                )
-
                 .build();
 
         final String json = gson.toJson(gait);
