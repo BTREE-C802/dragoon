@@ -5,14 +5,16 @@ import com.github.ompc.robot.hexapod.dragoon.component.mqtt.messenger.MessageCom
 import com.github.ompc.robot.hexapod.dragoon.component.mqtt.messenger.Messenger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import static com.github.ompc.robot.hexapod.dragoon.component.gait.Joint.*;
-import static com.github.ompc.robot.hexapod.dragoon.component.gait.Leg.*;
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.Joint.ANK;
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.Joint.KNE;
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.Limb.L_M;
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.Limb.R_M;
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Pose.poses;
+import static org.apache.commons.lang3.ArrayUtils.toArray;
 
 public class GaitTestCase extends SpringBootSupportTestCase {
 
@@ -38,41 +40,50 @@ public class GaitTestCase extends SpringBootSupportTestCase {
         final Gait gait = new GaitBuilder()
 
 //                // TEST
-//                .append(
+//                .changeTo(
 //                        2000,
-//                        Pose.poses(new Leg[]{R_F, L_F}, new Joint[]{ANK}, 45)
+//                        Pose.poses(new Limb[]{R_F, L_F}, new Joint[]{ANK}, 45)
 //                )
-//                .append(
+//                .changeTo(
 //                        2000,
-//                        Pose.poses(new Leg[]{R_F, L_F}, new Joint[]{ANK}, 135)
+//                        Pose.poses(new Limb[]{R_F, L_F}, new Joint[]{ANK}, 135)
 //                )
-//                .append(
+//                .changeTo(
 //                        2000,
-//                        Pose.poses(new Leg[]{R_F, L_F}, new Joint[]{ANK}, 90)
+//                        Pose.poses(new Limb[]{R_F, L_F}, new Joint[]{ANK}, 90)
 //                )
 
-                // HIGH
-                .append(
-                        2000,
-                        poses(new Joint[]{KNE,ANK}, 45),
-                        poses(new Joint[]{HIP}, 90)
-                )
+//                // HIGH
+//                .changeTo(
+//                        2000,
+//                        poses(new Joint[]{KNE,ANK}, 45),
+//                        poses(new Joint[]{HIP}, 90)
+//                )
+//
+//                // RESET
+//                .changeTo(
+//                        2000,
+//                        poses(new Joint[]{HIP, KNE}, 90),
+//                        poses(new Joint[]{ANK}, 120)
+//                )
 
-                // RESET
-                .append(
-                        2000,
-                        poses(new Joint[]{HIP, KNE}, 90),
-                        poses(new Joint[]{ANK}, 0)
-                )
+                .changeTo(200, poses(toArray(L_M, R_M), toArray(ANK), 0))
+                .changeTo(200, poses(toArray(L_M, R_M), toArray(KNE), 120))
+                .changeTo(200, poses(toArray(L_M, R_M), toArray(KNE), 90))
+
                 .build();
 
         final String json = gson.toJson(gait);
 
-        messenger.publish(
-                Messenger.PublishMode.AT_LEAST_ONCE,
-                String.format("/%s/%s/user/messenger/test/post", productKey, deviceName),
-                json.getBytes()
-        );
+
+        for (int i = 0; i < 10; i++) {
+            messenger.publish(
+                    Messenger.PublishMode.AT_LEAST_ONCE,
+                    String.format("/%s/%s/user/messenger/test/post", productKey, deviceName),
+                    json.getBytes()
+            );
+        }
+
 
     }
 

@@ -8,7 +8,7 @@ import java.util.Collection;
  */
 public class Pose {
 
-    private Leg leg;
+    private Limb limb;
     private Joint joint;
     private float angle;
 
@@ -16,54 +16,42 @@ public class Pose {
 
     }
 
-    public Pose(final Leg leg,
-                final Joint joint,
-                final float angle) {
-        this.leg = leg;
+    private Pose(final Limb limb,
+                 final Joint joint,
+                 final float angle) {
+        this.limb = limb;
         this.joint = joint;
         this.angle = angle;
     }
 
-    public Leg getLeg() {
-        return leg;
-    }
-
-    public void setLeg(Leg leg) {
-        this.leg = leg;
+    public Limb getLimb() {
+        return limb;
     }
 
     public Joint getJoint() {
         return joint;
     }
 
-    public void setJoint(Joint joint) {
-        this.joint = joint;
-    }
-
     public float getAngle() {
         return angle;
     }
 
-    public void setAngle(float angle) {
-        this.angle = angle;
-    }
-
-
-    public static Pose[] poses(final Leg[] legs,
-                                         final Joint[] joints,
-                                         final float angle) {
+    /**
+     * 姿态
+     *
+     * @param limbs  肢
+     * @param joints 关节
+     * @param angle  角度
+     * @return 姿态集合
+     */
+    public static Pose[] poses(final Limb[] limbs, final Joint[] joints, final float angle) {
         final Collection<Pose> poses = new ArrayList<>();
-        for (final Leg leg : legs) {
+        for (final Limb limb : limbs) {
             for (final Joint joint : joints) {
-                poses.add(new Pose(leg, joint, angle));
+                poses.add(new Pose(limb, joint, angle));
             }
         }
         return poses.toArray(new Pose[poses.size()]);
-    }
-
-    public static Pose[] poses(final Joint[] joints,
-                                         final float angle) {
-        return poses(Leg.values(), joints, angle);
     }
 
 }

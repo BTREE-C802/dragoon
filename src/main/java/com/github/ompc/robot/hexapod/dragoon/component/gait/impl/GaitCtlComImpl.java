@@ -74,7 +74,7 @@ public class GaitCtlComImpl implements GaitCtlCom, Runnable, InitializingBean {
         return gait.getPoses().stream()
                 .map(pose -> new ServoCtlPiDev.ServoCmd(
                         gaitServoMapper.getServoIndex(
-                                pose.getLeg(),
+                                pose.getLimb(),
                                 pose.getJoint()
                         ),
                         pose.getAngle()

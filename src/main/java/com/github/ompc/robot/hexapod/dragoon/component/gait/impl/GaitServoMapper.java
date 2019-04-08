@@ -1,14 +1,14 @@
 package com.github.ompc.robot.hexapod.dragoon.component.gait.impl;
 
 import com.github.ompc.robot.hexapod.dragoon.component.gait.Joint;
-import com.github.ompc.robot.hexapod.dragoon.component.gait.Leg;
+import com.github.ompc.robot.hexapod.dragoon.component.gait.Limb;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Joint.*;
-import static com.github.ompc.robot.hexapod.dragoon.component.gait.Leg.*;
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.Limb.*;
 
 /**
  * 步态舵机映射
@@ -69,31 +69,31 @@ class GaitServoMapper {
         gaitServoMap.put(new Key(R_H, ANK), 12);
     }
 
-    public Integer getServoIndex(Leg leg, Joint joint) {
-        return gaitServoMap.get(new Key(leg, joint));
+    public Integer getServoIndex(Limb limb, Joint joint) {
+        return gaitServoMap.get(new Key(limb, joint));
     }
 
 
     class Key {
 
-        final Leg leg;
+        final Limb limb;
         final Joint joint;
 
-        Key(Leg leg, Joint joint) {
-            this.leg = leg;
+        Key(Limb limb, Joint joint) {
+            this.limb = limb;
             this.joint = joint;
         }
 
         @Override
         public boolean equals(Object other) {
             return other instanceof Key
-                    && ((Key) other).leg == leg
+                    && ((Key) other).limb == limb
                     && ((Key) other).joint == joint;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(leg, joint);
+            return Objects.hash(limb, joint);
         }
     }
 

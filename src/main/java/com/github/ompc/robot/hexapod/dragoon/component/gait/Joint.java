@@ -7,6 +7,11 @@ public enum Joint {
 
     HIP,
     KNE,
-    ANK
+    ANK;
+
+    /**
+     * 所有关节
+     */
+    public static Joint[] JOINT_ALL = Joint.values();
 
 }

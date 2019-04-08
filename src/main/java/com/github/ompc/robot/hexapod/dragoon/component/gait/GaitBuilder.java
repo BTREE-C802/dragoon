@@ -11,28 +11,22 @@ public class GaitBuilder {
 
     private Gait gait;
 
-    private Gait appendGaitAtLast(Gait gait) {
-        final Gait last;
-        if (null == gait) {
-            last = new Gait();
-        } else {
-            if (gait.hasNext()) {
-                last = appendGaitAtLast(gait.getNext());
-            } else {
-                gait.setNext(last = new Gait());
-            }
-        }
-        return last;
-    }
-
+    // 获取最后一个步态
     private Gait last(Gait gait) {
         return gait.hasNext()
                 ? last(gait.getNext())
                 : gait;
     }
 
-    public GaitBuilder append(final long durationMs,
-                              final Pose... poses) {
+    /**
+     * 步态调整到...
+     *
+     * @param durationMs 步态调整执行时间
+     * @param poses      步态最终姿态
+     * @return this
+     */
+    public GaitBuilder changeTo(final long durationMs,
+                                final Pose... poses) {
         final Gait current;
         if (null == gait) {
             gait = current = new Gait();
@@ -47,15 +41,27 @@ public class GaitBuilder {
         return this;
     }
 
-    public GaitBuilder append(final long durationMs,
-                              final Pose[]... posesArray) {
+    /**
+     * 步态调整到...
+     *
+     * @param durationMs 步态调整执行时间
+     * @param posesArray 步态最终姿态(集合)
+     * @return this
+     */
+    public GaitBuilder changeTo(final long durationMs,
+                                final Pose[]... posesArray) {
         final Collection<Pose> mergePoses = new ArrayList<>();
         for (final Pose[] poses : posesArray) {
             mergePoses.addAll(Arrays.asList(poses));
         }
-        return append(durationMs, mergePoses.toArray(new Pose[mergePoses.size()]));
+        return changeTo(durationMs, mergePoses.toArray(new Pose[mergePoses.size()]));
     }
 
+    /**
+     * 构建步态
+     *
+     * @return 步态
+     */
     public Gait build() {
         return gait;
     }
