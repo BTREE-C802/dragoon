@@ -8,12 +8,13 @@ public interface Messenger {
     /**
      * 同步发布消息
      *
-     * @param mode    发布模式
-     * @param topic   消息主题
-     * @param message 消息内容
+     * @param mode     发布模式
+     * @param topic    消息主题
+     * @param message  消息内容
+     * @param retained 是否在broken端存储消息
      * @throws MessageComException 同步发布消息失败
      */
-    void publish(PublishMode mode, String topic, byte[] message) throws MessageComException;
+    void publish(PublishMode mode, String topic, byte[] message, boolean retained) throws MessageComException;
 
     /**
      * 发布模式

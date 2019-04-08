@@ -29,11 +29,11 @@ public class MessengerImplByMqtt implements Messenger {
     private MqttClientConfig mqttConfig;
 
     @Override
-    public void publish(PublishMode mode, String topic, byte[] message) throws MessageComException {
+    public void publish(PublishMode mode, String topic, byte[] message, boolean retained) throws MessageComException {
         final MqttTopic publishMqttTopic = mqttClient.getTopic(topic);
         try {
             waitForCompletionWithException(
-                    publishMqttTopic.publish(message, mode.getValue(), true),
+                    publishMqttTopic.publish(message, mode.getValue(), retained),
                     mqttConfig.getPublishTimeoutMs()
             );
             logger.info("publish topic:{} success", publishMqttTopic);

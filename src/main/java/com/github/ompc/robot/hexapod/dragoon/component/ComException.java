@@ -29,7 +29,12 @@ public class ComException extends Exception {
         /**
          * 消息异常
          */
-        MESSENGER
+        MESSENGER,
+
+        /**
+         * 远程命令异常
+         */
+        REMOTE_CMD
     }
 
 }

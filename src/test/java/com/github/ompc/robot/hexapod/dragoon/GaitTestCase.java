@@ -1,8 +1,11 @@
 package com.github.ompc.robot.hexapod.dragoon;
 
-import com.github.ompc.robot.hexapod.dragoon.component.gait.*;
+import com.github.ompc.robot.hexapod.dragoon.component.gait.Gait;
+import com.github.ompc.robot.hexapod.dragoon.component.gait.GaitBuilder;
+import com.github.ompc.robot.hexapod.dragoon.component.gait.GaitCtlCom;
 import com.github.ompc.robot.hexapod.dragoon.component.mqtt.messenger.MessageComException;
 import com.github.ompc.robot.hexapod.dragoon.component.mqtt.messenger.Messenger;
+import com.github.ompc.robot.hexapod.dragoon.component.remote.RemoteCmd;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.Test;
@@ -70,17 +73,24 @@ public class GaitTestCase extends SpringBootSupportTestCase {
                 .changeTo(200, poses(toArray(L_M, R_M), toArray(ANK), 0))
                 .changeTo(200, poses(toArray(L_M, R_M), toArray(KNE), 120))
                 .changeTo(200, poses(toArray(L_M, R_M), toArray(KNE), 90))
+                .changeTo(200, poses(toArray(L_M, R_M), toArray(KNE), 120))
+                .changeTo(200, poses(toArray(L_M, R_M), toArray(KNE), 90))
+                .changeTo(200, poses(toArray(L_M, R_M), toArray(KNE), 120))
+                .changeTo(200, poses(toArray(L_M, R_M), toArray(KNE), 90))
+                .changeTo(200, poses(toArray(L_M, R_M), toArray(KNE), 120))
+                .changeTo(200, poses(toArray(L_M, R_M), toArray(KNE), 90))
 
                 .build();
 
-        final String json = gson.toJson(gait);
+        final String json = gson.toJson(new RemoteCmd<>(RemoteCmd.Type.GAIT, gait));
 
 
         for (int i = 0; i < 10; i++) {
             messenger.publish(
                     Messenger.PublishMode.AT_LEAST_ONCE,
                     String.format("/%s/%s/user/messenger/test/post", productKey, deviceName),
-                    json.getBytes()
+                    json.getBytes(),
+                    false
             );
         }
 

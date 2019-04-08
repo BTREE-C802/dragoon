@@ -94,13 +94,13 @@ public class GaitCtlComImpl implements GaitCtlCom, Runnable, InitializingBean {
             try {
 
                 final GaitWrap gaitWrap = gaitWrapQueue.take();
-                boolean isInterrupted = false;
                 try {
                     Gait gait = gaitWrap.gait;
 
                     /*
                      * 执行步态(组)
                      */
+                    boolean isInterrupted = false;
                     do {
 
                         /*
