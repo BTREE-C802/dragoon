@@ -1,8 +1,6 @@
 package com.github.ompc.robot.hexapod.dragoon;
 
-import com.github.ompc.robot.hexapod.dragoon.component.gait.Gait;
-import com.github.ompc.robot.hexapod.dragoon.component.gait.GaitBuilder;
-import com.github.ompc.robot.hexapod.dragoon.component.gait.GaitCtlCom;
+import com.github.ompc.robot.hexapod.dragoon.component.gait.*;
 import com.github.ompc.robot.hexapod.dragoon.component.mqtt.messenger.MessageComException;
 import com.github.ompc.robot.hexapod.dragoon.component.mqtt.messenger.Messenger;
 import com.github.ompc.robot.hexapod.dragoon.component.remote.RemoteCmd;
@@ -12,10 +10,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import static com.github.ompc.robot.hexapod.dragoon.component.gait.Joint.ANK;
-import static com.github.ompc.robot.hexapod.dragoon.component.gait.Joint.KNE;
-import static com.github.ompc.robot.hexapod.dragoon.component.gait.Limb.L_M;
-import static com.github.ompc.robot.hexapod.dragoon.component.gait.Limb.R_M;
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.Joint.*;
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.Limb.*;
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Pose.poses;
 import static org.apache.commons.lang3.ArrayUtils.toArray;
 
@@ -63,12 +59,12 @@ public class GaitTestCase extends SpringBootSupportTestCase {
 //                        poses(new Joint[]{HIP}, 90)
 //                )
 //
-//                // RESET
-//                .changeTo(
-//                        2000,
-//                        poses(new Joint[]{HIP, KNE}, 90),
-//                        poses(new Joint[]{ANK}, 120)
-//                )
+                // RESET
+                .changeTo(
+                        2000,
+                        poses(LIMB_ALL, toArray(HIP, KNE), 90),
+                        poses(LIMB_ALL, toArray(ANK), 120)
+                )
 
                 .changeTo(200, poses(toArray(L_M, R_M), toArray(ANK), 0))
                 .changeTo(200, poses(toArray(L_M, R_M), toArray(KNE), 120))
@@ -85,7 +81,7 @@ public class GaitTestCase extends SpringBootSupportTestCase {
         final String json = gson.toJson(new RemoteCmd<>(RemoteCmd.Type.GAIT, gait));
 
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1; i++) {
             messenger.publish(
                     Messenger.PublishMode.AT_LEAST_ONCE,
                     String.format("/%s/%s/user/messenger/test/post", productKey, deviceName),
