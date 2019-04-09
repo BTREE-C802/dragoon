@@ -76,13 +76,13 @@ public class GaitTestCase extends SpringBootSupportTestCase {
         ));
 
 
-        for (int i = 0; i < 10; i++) {
-            messenger.publish(
-                    Messenger.PublishMode.AT_MOST_ONCE,
-                    String.format("/%s/%s/user/messenger/test/post", productKey, deviceName),
-                    json.getBytes(),
-                    false
-            );
+        for (int i = 0; i < 1; i++) {
+//            messenger.publish(
+//                    Messenger.PublishMode.AT_MOST_ONCE,
+//                    String.format("/%s/%s/user/messenger/test/post", productKey, deviceName),
+//                    json.getBytes(),
+//                    false
+//            );
         }
 
 //        Thread.sleep(5 * 1000);
