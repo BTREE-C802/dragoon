@@ -12,6 +12,15 @@ public class Gait {
     private Collection<Pose> poses = new ArrayList<>();
     private Gait next;
 
+    public Gait() {
+
+    }
+
+    public Gait(final long durationMs, final Collection<Pose> poses) {
+        this.durationMs = durationMs;
+        this.poses = poses;
+    }
+
     /**
      * 获取步态持续时间
      *

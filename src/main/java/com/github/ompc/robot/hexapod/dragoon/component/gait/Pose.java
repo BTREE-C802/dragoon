@@ -36,6 +36,10 @@ public class Pose {
         return angle;
     }
 
+    public static Pose pose(final Limb limb, final Joint joint, final float angle) {
+        return new Pose(limb, joint, angle);
+    }
+
     /**
      * 姿态
      *

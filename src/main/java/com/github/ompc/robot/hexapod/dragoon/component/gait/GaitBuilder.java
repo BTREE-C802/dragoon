@@ -1,5 +1,7 @@
 package com.github.ompc.robot.hexapod.dragoon.component.gait;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,18 +29,12 @@ public class GaitBuilder {
      */
     public GaitBuilder changeTo(final long durationMs,
                                 final Pose... poses) {
-        final Gait current;
-        if (null == gait) {
-            gait = current = new Gait();
-        } else {
-            final Gait last = last(gait);
-            current = new Gait();
-            last.setNext(current);
-        }
+        return changeTo(new Gait(durationMs, Arrays.asList(poses)));
+    }
 
-        current.setDurationMs(durationMs);
-        current.getPoses().addAll(Arrays.asList(poses));
-        return this;
+    public GaitBuilder changeTo(final long durationMs,
+                                final Collection<Pose> poses) {
+        return changeTo(new Gait(durationMs, poses));
     }
 
     /**
@@ -52,9 +48,25 @@ public class GaitBuilder {
                                 final Pose[]... posesArray) {
         final Collection<Pose> mergePoses = new ArrayList<>();
         for (final Pose[] poses : posesArray) {
-            mergePoses.addAll(Arrays.asList(poses));
+            CollectionUtils.addAll(mergePoses, poses);
         }
-        return changeTo(durationMs, mergePoses.toArray(new Pose[mergePoses.size()]));
+        return changeTo(new Gait(durationMs, mergePoses));
+    }
+
+    /**
+     * 步态调整到...
+     *
+     * @param gait 下一个步态
+     * @return this
+     */
+    public GaitBuilder changeTo(final Gait gait) {
+        if (null == this.gait) {
+            this.gait = gait;
+            return this;
+        }
+        final Gait last = last(gait);
+        last.setNext(gait);
+        return this;
     }
 
     /**
