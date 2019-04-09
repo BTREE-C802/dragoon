@@ -118,7 +118,7 @@ public class GaitCtlComImpl implements GaitCtlCom, Runnable, InitializingBean {
                          */
                         waitingLock.lock();
                         try {
-                            if(isInterrupted = !waitingCompleteCondition.await(gait.getDurationMs(), TimeUnit.MILLISECONDS)) {
+                            if(isInterrupted = waitingCompleteCondition.await(gait.getDurationMs(), TimeUnit.MILLISECONDS)) {
                                 break;
                             }
                         } catch (InterruptedException ie) {

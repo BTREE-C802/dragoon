@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Joint.*;
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Limb.LIMB_ALL;
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.Limb.L_F;
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.Pose.pose;
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Pose.poses;
 import static org.apache.commons.lang3.ArrayUtils.toArray;
 
@@ -37,7 +39,15 @@ public class GaitTestCase extends SpringBootSupportTestCase {
     public void test() throws MessageComException, InterruptedException {
 
         final Gait gait = new GaitBuilder()
-                .changeTo(Gaits.stand(2000, 30))
+                .changeTo(Gaits.stand(2000, 20))
+                .changeTo(Gaits.stand(2000, 80))
+                .changeTo(Gaits.stand(2000, 20))
+                .changeTo(Gaits.stand(2000, 80))
+                .changeTo(Gaits.stand(2000, 20))
+                .changeTo(Gaits.stand(2000, 80))
+                .changeTo(Gaits.stand(2000, 20))
+                .changeTo(Gaits.stand(2000, 80))
+                // .changeTo(2000, pose(L_F, ANK, 45))
 
                 .build();
 

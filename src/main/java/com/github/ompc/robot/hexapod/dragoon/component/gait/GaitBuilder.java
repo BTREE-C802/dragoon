@@ -64,7 +64,7 @@ public class GaitBuilder {
             this.gait = gait;
             return this;
         }
-        final Gait last = last(gait);
+        final Gait last = last(this.gait);
         last.setNext(gait);
         return this;
     }

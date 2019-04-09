@@ -6,9 +6,12 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static com.github.ompc.robot.hexapod.dragoon.component.gait.Joint.ANK;
-import static com.github.ompc.robot.hexapod.dragoon.component.gait.Joint.KNE;
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.Joint.*;
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.Limb.LIMB_ALL;
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Pose.pose;
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.Pose.poses;
+import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.ArrayUtils.toArray;
 
 /**
  * 姿态控制集合
@@ -22,7 +25,7 @@ public class Gaits {
      * @return 复位姿态
      */
     public static final Gait reset(final long durationMs) {
-        return stand(durationMs, 7);
+        return stand(durationMs, 50);
     }
 
     /**
@@ -39,10 +42,11 @@ public class Gaits {
         for (final Limb limb : Limb.values()) {
             final float rate = 180.0f / limb.getLength();
             final float ank = highMm * rate;
-            poses.add(pose(limb, ANK, ank));
-            poses.add(pose(limb, KNE, 180.0f - ank));
+            poses.add(pose(limb, ANK, 180 - ank + 45));
+            poses.add(pose(limb, KNE, 180 - ank));
         }
 
+        poses.addAll(asList(poses(LIMB_ALL, toArray(HIP), 90)));
         return new GaitBuilder()
                 .changeTo(durationMs, poses)
                 .build();
