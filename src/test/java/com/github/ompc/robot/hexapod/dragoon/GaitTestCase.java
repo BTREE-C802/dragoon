@@ -1,6 +1,8 @@
 package com.github.ompc.robot.hexapod.dragoon;
 
-import com.github.ompc.robot.hexapod.dragoon.component.gait.*;
+import com.github.ompc.robot.hexapod.dragoon.component.gait.Gait;
+import com.github.ompc.robot.hexapod.dragoon.component.gait.GaitBuilder;
+import com.github.ompc.robot.hexapod.dragoon.component.gait.GaitCtlCom;
 import com.github.ompc.robot.hexapod.dragoon.component.mqtt.messenger.MessageComException;
 import com.github.ompc.robot.hexapod.dragoon.component.mqtt.messenger.Messenger;
 import com.github.ompc.robot.hexapod.dragoon.component.remote.RemoteCmd;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Joint.*;
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Limb.*;
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Pose.poses;
+import static com.github.ompc.robot.hexapod.dragoon.component.remote.RemoteCmd.Type.GAIT_INTERRUPT;
 import static org.apache.commons.lang3.ArrayUtils.toArray;
 
 public class GaitTestCase extends SpringBootSupportTestCase {
@@ -76,19 +79,129 @@ public class GaitTestCase extends SpringBootSupportTestCase {
                 .changeTo(200, poses(toArray(L_M, R_M), toArray(KNE), 120))
                 .changeTo(200, poses(toArray(L_M, R_M), toArray(KNE), 90))
 
+                // RESET
+                .changeTo(
+                        2000,
+                        poses(LIMB_ALL, toArray(HIP, KNE), 90),
+                        poses(LIMB_ALL, toArray(ANK), 120)
+                )
+
+                .changeTo(200, poses(toArray(L_F), toArray(ANK), 45)).changeTo(200, poses(toArray(L_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_F), toArray(ANK), 45)).changeTo(200, poses(toArray(L_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_F), toArray(ANK), 45)).changeTo(200, poses(toArray(L_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_M), toArray(ANK), 45)).changeTo(200, poses(toArray(L_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_M), toArray(ANK), 45)).changeTo(200, poses(toArray(L_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_M), toArray(ANK), 45)).changeTo(200, poses(toArray(L_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_H), toArray(ANK), 45)).changeTo(200, poses(toArray(L_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_H), toArray(ANK), 45)).changeTo(200, poses(toArray(L_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_H), toArray(ANK), 45)).changeTo(200, poses(toArray(L_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_F), toArray(ANK), 45)).changeTo(200, poses(toArray(R_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_F), toArray(ANK), 45)).changeTo(200, poses(toArray(R_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_F), toArray(ANK), 45)).changeTo(200, poses(toArray(R_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_M), toArray(ANK), 45)).changeTo(200, poses(toArray(R_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_M), toArray(ANK), 45)).changeTo(200, poses(toArray(R_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_M), toArray(ANK), 45)).changeTo(200, poses(toArray(R_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_H), toArray(ANK), 45)).changeTo(200, poses(toArray(R_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_H), toArray(ANK), 45)).changeTo(200, poses(toArray(R_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_H), toArray(ANK), 45)).changeTo(200, poses(toArray(R_H), toArray(ANK), 120))
+
+                .changeTo(200, poses(toArray(L_F), toArray(ANK), 45)).changeTo(200, poses(toArray(L_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_F), toArray(ANK), 45)).changeTo(200, poses(toArray(L_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_F), toArray(ANK), 45)).changeTo(200, poses(toArray(L_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_M), toArray(ANK), 45)).changeTo(200, poses(toArray(L_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_M), toArray(ANK), 45)).changeTo(200, poses(toArray(L_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_M), toArray(ANK), 45)).changeTo(200, poses(toArray(L_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_H), toArray(ANK), 45)).changeTo(200, poses(toArray(L_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_H), toArray(ANK), 45)).changeTo(200, poses(toArray(L_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_H), toArray(ANK), 45)).changeTo(200, poses(toArray(L_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_F), toArray(ANK), 45)).changeTo(200, poses(toArray(R_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_F), toArray(ANK), 45)).changeTo(200, poses(toArray(R_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_F), toArray(ANK), 45)).changeTo(200, poses(toArray(R_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_M), toArray(ANK), 45)).changeTo(200, poses(toArray(R_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_M), toArray(ANK), 45)).changeTo(200, poses(toArray(R_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_M), toArray(ANK), 45)).changeTo(200, poses(toArray(R_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_H), toArray(ANK), 45)).changeTo(200, poses(toArray(R_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_H), toArray(ANK), 45)).changeTo(200, poses(toArray(R_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_H), toArray(ANK), 45)).changeTo(200, poses(toArray(R_H), toArray(ANK), 120))
+
+                .changeTo(200, poses(toArray(L_F), toArray(ANK), 45)).changeTo(200, poses(toArray(L_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_F), toArray(ANK), 45)).changeTo(200, poses(toArray(L_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_F), toArray(ANK), 45)).changeTo(200, poses(toArray(L_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_M), toArray(ANK), 45)).changeTo(200, poses(toArray(L_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_M), toArray(ANK), 45)).changeTo(200, poses(toArray(L_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_M), toArray(ANK), 45)).changeTo(200, poses(toArray(L_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_H), toArray(ANK), 45)).changeTo(200, poses(toArray(L_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_H), toArray(ANK), 45)).changeTo(200, poses(toArray(L_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_H), toArray(ANK), 45)).changeTo(200, poses(toArray(L_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_F), toArray(ANK), 45)).changeTo(200, poses(toArray(R_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_F), toArray(ANK), 45)).changeTo(200, poses(toArray(R_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_F), toArray(ANK), 45)).changeTo(200, poses(toArray(R_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_M), toArray(ANK), 45)).changeTo(200, poses(toArray(R_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_M), toArray(ANK), 45)).changeTo(200, poses(toArray(R_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_M), toArray(ANK), 45)).changeTo(200, poses(toArray(R_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_H), toArray(ANK), 45)).changeTo(200, poses(toArray(R_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_H), toArray(ANK), 45)).changeTo(200, poses(toArray(R_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_H), toArray(ANK), 45)).changeTo(200, poses(toArray(R_H), toArray(ANK), 120))
+
+                .changeTo(200, poses(toArray(L_F), toArray(ANK), 45)).changeTo(200, poses(toArray(L_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_F), toArray(ANK), 45)).changeTo(200, poses(toArray(L_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_F), toArray(ANK), 45)).changeTo(200, poses(toArray(L_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_M), toArray(ANK), 45)).changeTo(200, poses(toArray(L_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_M), toArray(ANK), 45)).changeTo(200, poses(toArray(L_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_M), toArray(ANK), 45)).changeTo(200, poses(toArray(L_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_H), toArray(ANK), 45)).changeTo(200, poses(toArray(L_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_H), toArray(ANK), 45)).changeTo(200, poses(toArray(L_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_H), toArray(ANK), 45)).changeTo(200, poses(toArray(L_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_F), toArray(ANK), 45)).changeTo(200, poses(toArray(R_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_F), toArray(ANK), 45)).changeTo(200, poses(toArray(R_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_F), toArray(ANK), 45)).changeTo(200, poses(toArray(R_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_M), toArray(ANK), 45)).changeTo(200, poses(toArray(R_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_M), toArray(ANK), 45)).changeTo(200, poses(toArray(R_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_M), toArray(ANK), 45)).changeTo(200, poses(toArray(R_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_H), toArray(ANK), 45)).changeTo(200, poses(toArray(R_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_H), toArray(ANK), 45)).changeTo(200, poses(toArray(R_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_H), toArray(ANK), 45)).changeTo(200, poses(toArray(R_H), toArray(ANK), 120))
+
+                .changeTo(200, poses(toArray(L_F), toArray(ANK), 45)).changeTo(200, poses(toArray(L_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_F), toArray(ANK), 45)).changeTo(200, poses(toArray(L_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_F), toArray(ANK), 45)).changeTo(200, poses(toArray(L_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_M), toArray(ANK), 45)).changeTo(200, poses(toArray(L_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_M), toArray(ANK), 45)).changeTo(200, poses(toArray(L_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_M), toArray(ANK), 45)).changeTo(200, poses(toArray(L_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_H), toArray(ANK), 45)).changeTo(200, poses(toArray(L_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_H), toArray(ANK), 45)).changeTo(200, poses(toArray(L_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(L_H), toArray(ANK), 45)).changeTo(200, poses(toArray(L_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_F), toArray(ANK), 45)).changeTo(200, poses(toArray(R_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_F), toArray(ANK), 45)).changeTo(200, poses(toArray(R_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_F), toArray(ANK), 45)).changeTo(200, poses(toArray(R_F), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_M), toArray(ANK), 45)).changeTo(200, poses(toArray(R_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_M), toArray(ANK), 45)).changeTo(200, poses(toArray(R_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_M), toArray(ANK), 45)).changeTo(200, poses(toArray(R_M), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_H), toArray(ANK), 45)).changeTo(200, poses(toArray(R_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_H), toArray(ANK), 45)).changeTo(200, poses(toArray(R_H), toArray(ANK), 120))
+                .changeTo(200, poses(toArray(R_H), toArray(ANK), 45)).changeTo(200, poses(toArray(R_H), toArray(ANK), 120))
+
                 .build();
 
         final String json = gson.toJson(new RemoteCmd<>(RemoteCmd.Type.GAIT, gait));
 
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 10; i++) {
             messenger.publish(
                     Messenger.PublishMode.AT_LEAST_ONCE,
                     String.format("/%s/%s/user/messenger/test/post", productKey, deviceName),
                     json.getBytes(),
-                    false
+                    true
             );
         }
+
+//        Thread.sleep(5 * 1000);
+//        messenger.publish(
+//                Messenger.PublishMode.AT_LEAST_ONCE,
+//                String.format("/%s/%s/user/messenger/test/post", productKey, deviceName),
+//                gson.toJson(new RemoteCmd<Void>(GAIT_INTERRUPT, null)).getBytes(),
+//                true
+//        );
 
 
     }

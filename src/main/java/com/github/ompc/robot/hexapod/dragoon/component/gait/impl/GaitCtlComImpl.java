@@ -100,7 +100,7 @@ public class GaitCtlComImpl implements GaitCtlCom, Runnable, InitializingBean {
                     /*
                      * 执行步态(组)
                      */
-                    boolean isInterrupted = false;
+                    boolean isInterrupted;
                     do {
 
                         /*
@@ -118,7 +118,9 @@ public class GaitCtlComImpl implements GaitCtlCom, Runnable, InitializingBean {
                          */
                         waitingLock.lock();
                         try {
-                            isInterrupted = !waitingCompleteCondition.await(gait.getDurationMs(), TimeUnit.MILLISECONDS);
+                            if(isInterrupted = !waitingCompleteCondition.await(gait.getDurationMs(), TimeUnit.MILLISECONDS)) {
+                                break;
+                            }
                         } catch (InterruptedException ie) {
                             isInterrupted = true;
                             break;
