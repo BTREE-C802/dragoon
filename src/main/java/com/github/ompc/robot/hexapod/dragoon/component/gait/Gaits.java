@@ -25,7 +25,7 @@ public class Gaits {
      * @return 复位姿态
      */
     public static final Gait reset(final long durationMs) {
-        return stand(durationMs, 50);
+        return stand(durationMs, 30);
     }
 
     /**
@@ -42,7 +42,7 @@ public class Gaits {
         for (final Limb limb : Limb.values()) {
             final float rate = 180.0f / limb.getLength();
             final float ank = highMm * rate;
-            poses.add(pose(limb, ANK, 180 - ank + 45));
+            poses.add(pose(limb, ANK, 180 - ank + ANK.getFix()));
             poses.add(pose(limb, KNE, 180 - ank));
         }
 
