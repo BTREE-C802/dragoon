@@ -3,6 +3,7 @@ package com.github.ompc.robot.hexapod.dragoon.component.gait;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -10,6 +11,9 @@ import static com.github.ompc.robot.hexapod.dragoon.component.gait.Joint.*;
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Limb.LIMB_ALL;
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Pose.pose;
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Pose.poses;
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.Radians.RAD_PI;
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.Radians.rad_pi_half;
+import static java.math.BigDecimal.ROUND_HALF_EVEN;
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.ArrayUtils.toArray;
 
@@ -40,13 +44,13 @@ public class Gaits {
 
         final Collection<Pose> poses = new ArrayList<>();
         for (final Limb limb : Limb.values()) {
-            final float rate = 180.0f / limb.getLength();
-            final float ank = highMm * rate;
-            poses.add(pose(limb, ANK, 180 - ank + ANK.getFix()));
-            poses.add(pose(limb, KNE, 180 - ank));
+            final BigDecimal rate = RAD_PI.divide(BigDecimal.valueOf(limb.getLength()), ROUND_HALF_EVEN);
+            final BigDecimal ank = BigDecimal.valueOf(highMm).multiply(rate);
+            poses.add(pose(limb, ANK, RAD_PI.subtract(ank).add(BigDecimal.valueOf(ANK.getDeviation())).doubleValue()));
+            poses.add(pose(limb, KNE, RAD_PI.subtract(ank).doubleValue()));
         }
 
-        poses.addAll(asList(poses(LIMB_ALL, toArray(HIP), 90)));
+        poses.addAll(asList(poses(LIMB_ALL, toArray(HIP), rad_pi_half)));
         return new GaitBuilder()
                 .changeTo(durationMs, poses)
                 .build();
@@ -57,6 +61,7 @@ public class Gaits {
         final Gson gson = new GsonBuilder().setPrettyPrinting().create();
         final Gait gait = new GaitBuilder().changeTo(stand(2000, 30)).build();
         System.out.println(gson.toJson(gait));
+        System.out.println(Math.toDegrees(2.199114857512853));
 
     }
 

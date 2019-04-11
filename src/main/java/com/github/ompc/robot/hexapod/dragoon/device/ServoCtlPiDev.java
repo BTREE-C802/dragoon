@@ -9,7 +9,7 @@ public interface ServoCtlPiDev extends PiDev {
      * 控制舵机
      *
      * @param durationMs 控制持续时间（MS)
-     * @param servoCmds  具体舵机控制转动角度集合
+     * @param servoCmds  具体舵机控制命令集合
      * @throws PiDevException 组件执行动作失败
      */
     void control(long durationMs, ServoCmd... servoCmds) throws PiDevException;
@@ -22,18 +22,18 @@ public interface ServoCtlPiDev extends PiDev {
         // 舵机编号
         private final int index;
 
-        // 目标角度
-        private final float angle;
+        // 目标弧度
+        private final double radian;
 
         /**
          * 构造舵机命令
          *
-         * @param index 舵机编号
-         * @param angle 旋转目标角度
+         * @param index  舵机编号
+         * @param radian 旋转目标弧度
          */
-        public ServoCmd(int index, float angle) {
+        public ServoCmd(int index, double radian) {
             this.index = index;
-            this.angle = angle;
+            this.radian = radian;
         }
 
         /**
@@ -46,12 +46,12 @@ public interface ServoCtlPiDev extends PiDev {
         }
 
         /**
-         * 获取旋转目标角度
+         * 获取旋转目标弧度
          *
-         * @return 旋转目标角度
+         * @return 旋转目标弧度
          */
-        public float getAngle() {
-            return angle;
+        public double getRadian() {
+            return radian;
         }
     }
 

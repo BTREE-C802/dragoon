@@ -3,19 +3,21 @@ package com.github.ompc.robot.hexapod.dragoon.device.impl;
 import com.github.ompc.robot.hexapod.dragoon.device.PulseWidthComputer;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
+import static java.lang.Math.PI;
+
 @Component
 public class PulseWidthComputerImpl implements PulseWidthComputer {
 
-    private static final float ANGLE_MIN = 0.0f;
-    private static final float ANGLE_MAX = 180.0f;
-    private static final float CYCLE_MAX = 360.0f;
     private static final int PULSE_WIDTH_MIN = 500;
     private static final int PULSE_WIDTH_MAX = 2500;
-    private static final float AP_RATE = (PULSE_WIDTH_MAX - PULSE_WIDTH_MIN) / ANGLE_MAX;
+    private static final BigDecimal RADIAN_MIN = BigDecimal.ZERO;
+    private static final BigDecimal RADIAN_MAX = BigDecimal.valueOf(PI);
+    private static final BigDecimal RADIAN_PW_RATE = BigDecimal.valueOf(PULSE_WIDTH_MAX - PULSE_WIDTH_MIN).divide(RADIAN_MAX, BigDecimal.ROUND_HALF_EVEN);
 
     @Override
-    public int compute(int servoIndex, float angle) {
-        final float fixAngle = fixAngle(angle);
+    public int compute(int servoIndex, double radian) {
         switch (servoIndex) {
             case 1:
             case 2:
@@ -26,26 +28,19 @@ public class PulseWidthComputerImpl implements PulseWidthComputer {
             case 7:
             case 8:
             case 9:
-                return computePulseWidth(180.0f - fixAngle);
+                return computePulseWidth(RADIAN_MAX.subtract(BigDecimal.valueOf(radian)));
             default:
-                return computePulseWidth(fixAngle);
+                return computePulseWidth(BigDecimal.valueOf(radian));
         }
     }
 
-    // 角度换算脉宽
-    private int computePulseWidth(float angle) {
-        return fixPw((int) (PULSE_WIDTH_MIN + angle * AP_RATE));
-    }
-
-    private float fixAngle(final float angle) {
-        final float angleInCycle = angle % CYCLE_MAX;
-        return angleInCycle < 0
-                ? CYCLE_MAX + angleInCycle
-                : angleInCycle;
+    // 弧度换算脉宽
+    private int computePulseWidth(BigDecimal radian) {
+        return modifyPulseWidth(radian.multiply(RADIAN_PW_RATE).intValue());
     }
 
     // 修正计算出的频宽误差，必须控制在min~max之间
-    private int fixPw(int pw) {
+    private int modifyPulseWidth(int pw) {
         if (pw <= PULSE_WIDTH_MIN) {
             return PULSE_WIDTH_MIN;
         } else if (pw >= PULSE_WIDTH_MAX) {

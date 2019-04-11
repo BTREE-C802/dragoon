@@ -38,12 +38,7 @@ public class GaitTestCase extends SpringBootSupportTestCase {
     public void test() throws MessageComException, InterruptedException {
 
         final Gait gait = new GaitBuilder()
-                .changeTo(Gaits.reset(1000))
-                .changeTo(
-                        2000,
-                        poses(toArray(L_F,R_M,L_H), toArray(KNE), 180),
-                        poses(toArray(L_F,R_M,L_H), toArray(HIP), 45)
-                )
+                .changeTo(Gaits.stand(1000, 50))
 //                .changeTo(
 //                        2000,
 //                        poses(toArray(L_F,R_M,L_H), toArray(KNE), 90)

@@ -19,7 +19,6 @@ import java.util.Arrays;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
-import static org.apache.commons.lang3.ArrayUtils.getLength;
 import static org.apache.commons.lang3.ArrayUtils.isEmpty;
 
 @Component
@@ -110,7 +109,7 @@ public class ServoCtlPiDevImpl implements ServoCtlPiDev, InitializingBean {
                     .putShort((short) durationMs);
             Arrays.stream(mergeCmds).forEach(cmd -> {
                 buffer.put((byte) cmd.getIndex())
-                        .putShort((short) pulseWidthComputer.compute(cmd.getIndex(), cmd.getAngle()));
+                        .putShort((short) pulseWidthComputer.compute(cmd.getIndex(), cmd.getRadian()));
             });
 
             buffer.flip();
