@@ -36,7 +36,7 @@ public class PulseWidthComputerImpl implements PulseWidthComputer {
 
     // 弧度换算脉宽
     private int computePulseWidth(BigDecimal radian) {
-        return modifyPulseWidth(radian.multiply(RADIAN_PW_RATE).intValue());
+        return modifyPulseWidth(PULSE_WIDTH_MIN + radian.multiply(RADIAN_PW_RATE).intValue());
     }
 
     // 修正计算出的频宽误差，必须控制在min~max之间
