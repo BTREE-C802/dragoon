@@ -56,13 +56,5 @@ public class Gaits {
                 .build();
     }
 
-    public static void main(String... args) {
-
-        final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        final Gait gait = new GaitBuilder().changeTo(stand(2000, 30)).build();
-        System.out.println(gson.toJson(gait));
-        System.out.println(Math.toDegrees(2.199114857512853));
-
-    }
 
 }

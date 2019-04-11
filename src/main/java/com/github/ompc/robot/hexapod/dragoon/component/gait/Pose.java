@@ -3,6 +3,10 @@ package com.github.ompc.robot.hexapod.dragoon.component.gait;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.Joint.JOINT_ALL;
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.Limb.LIMB_ALL;
+import static org.apache.commons.lang3.ArrayUtils.toArray;
+
 /**
  * 姿态
  */
@@ -71,7 +75,7 @@ public class Pose {
     }
 
     /**
-     * 姿态
+     * 姿态集合
      *
      * @param limbs  肢
      * @param joints 关节
@@ -86,6 +90,52 @@ public class Pose {
             }
         }
         return poses.toArray(new Pose[poses.size()]);
+    }
+
+    /**
+     * 姿态集合
+     *
+     * @param limb   肢
+     * @param joints 关节
+     * @param radian 弧度
+     * @return 姿态集合
+     */
+    public static Pose[] poses(final Limb limb, final Joint[] joints, final double radian) {
+        return poses(toArray(limb), joints, radian);
+    }
+
+    /**
+     * 姿态集合
+     *
+     * @param joints 关节
+     * @param radian 弧度
+     * @return 姿态集合
+     */
+    public static Pose[] poses(final Joint[] joints, final double radian) {
+        return poses(LIMB_ALL, joints, radian);
+    }
+
+    /**
+     * 姿态集合
+     *
+     * @param limbs  肢
+     * @param joint  关节
+     * @param radian 弧度
+     * @return 姿态集合
+     */
+    public static Pose[] poses(final Limb[] limbs, final Joint joint, final double radian) {
+        return poses(limbs, toArray(joint), radian);
+    }
+
+    /**
+     * 姿态集合
+     *
+     * @param limbs  肢
+     * @param radian 弧度
+     * @return 姿态集合
+     */
+    public static Pose[] poses(final Limb[] limbs, final double radian) {
+        return poses(limbs, JOINT_ALL, radian);
     }
 
 }

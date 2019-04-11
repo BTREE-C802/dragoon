@@ -14,6 +14,7 @@ import static com.github.ompc.robot.hexapod.dragoon.component.gait.Joint.*;
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Limb.*;
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Pose.pose;
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Pose.poses;
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.Radians.*;
 import static org.apache.commons.lang3.ArrayUtils.toArray;
 
 public class GaitTestCase extends SpringBootSupportTestCase {
@@ -38,10 +39,11 @@ public class GaitTestCase extends SpringBootSupportTestCase {
     public void test() throws MessageComException, InterruptedException {
 
         final Gait gait = new GaitBuilder()
-                .changeTo(Gaits.stand(1000, 50))
+                .changeTo(Gaits.stand(500,100))
+
 //                .changeTo(
 //                        2000,
-//                        poses(toArray(L_F,R_M,L_H), toArray(KNE), 90)
+//                        pose(L_F, KNE, rad_pi_zero)
 //                )
 
                 .build();

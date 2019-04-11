@@ -3,8 +3,9 @@ package com.github.ompc.robot.hexapod.dragoon.component.gait;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+
+import static java.util.Arrays.asList;
 
 /**
  * 步态构造器
@@ -27,13 +28,11 @@ public class GaitBuilder {
      * @param poses      步态最终姿态
      * @return this
      */
-    public GaitBuilder changeTo(final long durationMs,
-                                final Pose... poses) {
-        return changeTo(new Gait(durationMs, Arrays.asList(poses)));
+    public GaitBuilder changeTo(final long durationMs, final Pose... poses) {
+        return changeTo(new Gait(durationMs, asList(poses)));
     }
 
-    public GaitBuilder changeTo(final long durationMs,
-                                final Collection<Pose> poses) {
+    public GaitBuilder changeTo(final long durationMs, final Collection<Pose> poses) {
         return changeTo(new Gait(durationMs, poses));
     }
 
@@ -44,8 +43,7 @@ public class GaitBuilder {
      * @param posesArray 步态最终姿态(集合)
      * @return this
      */
-    public GaitBuilder changeTo(final long durationMs,
-                                final Pose[]... posesArray) {
+    public GaitBuilder changeTo(final long durationMs, final Pose[]... posesArray) {
         final Collection<Pose> mergePoses = new ArrayList<>();
         for (final Pose[] poses : posesArray) {
             CollectionUtils.addAll(mergePoses, poses);
