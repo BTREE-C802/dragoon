@@ -9,6 +9,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
@@ -95,13 +96,21 @@ public class GaitCtlComImpl implements GaitCtlCom, Runnable, InitializingBean {
 
                 final GaitWrap gaitWrap = gaitWrapQueue.take();
                 try {
-                    Gait gait = gaitWrap.gait;
+                    // Gait gait = gaitWrap.gait;
 
                     /*
                      * 执行步态(组)
                      */
-                    boolean isInterrupted;
-                    do {
+                    boolean isInterrupted = false;
+
+                    final Iterator<Gait> gaitIt = gaitWrap.gait.iterator();
+                    while (gaitIt.hasNext()) {
+                        final Gait gait = gaitIt.next();
+
+                        // 忽略执行时间无效的步态，根本没有时间给机器人执行
+                        if (gait.getDurationMs() <= 0) {
+                            return;
+                        }
 
                         /*
                          * 发送舵机命令
@@ -127,8 +136,7 @@ public class GaitCtlComImpl implements GaitCtlCom, Runnable, InitializingBean {
                         } finally {
                             waitingLock.unlock();
                         }
-
-                    } while (gait.hasNext() && (gait = gait.getNext()) != null);
+                    }
 
                     // 步态执行完成回馈
                     if (null != gaitWrap.callback) {

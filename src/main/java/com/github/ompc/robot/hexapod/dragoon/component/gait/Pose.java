@@ -27,7 +27,7 @@ public class Pose {
      * @param joint  关节
      * @param radian 弧度
      */
-    private Pose(final Limb limb,
+    public Pose(final Limb limb,
                  final Joint joint,
                  final double radian) {
         this.limb = limb;
@@ -102,6 +102,17 @@ public class Pose {
      */
     public static Pose[] poses(final Limb limb, final Joint[] joints, final double radian) {
         return poses(toArray(limb), joints, radian);
+    }
+
+    /**
+     * 姿态集合
+     *
+     * @param joint  关节
+     * @param radian 弧度
+     * @return 姿态集合
+     */
+    public static Pose[] poses(final Joint joint, final double radian) {
+        return poses(LIMB_ALL, toArray(joint), radian);
     }
 
     /**
