@@ -3,11 +3,9 @@ package com.github.ompc.robot.hexapod.dragoon.component.gait.builder;
 import com.github.ompc.robot.hexapod.dragoon.component.gait.Pose;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import static java.lang.System.arraycopy;
-import static org.apache.commons.lang3.ArrayUtils.addAll;
 
 /**
  * 姿态集合预算
@@ -15,89 +13,65 @@ import static org.apache.commons.lang3.ArrayUtils.addAll;
 @FunctionalInterface
 public interface PoseOperation {
 
+    PoseOperation merge = new PoseOperationMerge();
+    PoseOperation addition = new PoseOperationAddition();
+
     /**
      * 矩阵运算
      *
-     * @param src 源头
-     * @param dst 目标
+     * @param arguments 运算参数
      * @return 结果
      */
-    Pose[] operate(Pose[] src, Pose[] dst);
+    Pose[] operate(Pose[]... arguments);
 
     /**
-     * 相加：src + dst
+     * 相加：arguments所有姿态合并，相同的(limb,joint)的弧度进行相加
      */
     class PoseOperationAddition implements PoseOperation {
 
         @Override
-        public Pose[] operate(Pose[] src, Pose[] dst) {
-            final Map<String, Pose> uniqueMap = new LinkedHashMap<>();
-            for (Pose pose : src) {
-                final String key = "KEY$" + pose.getLimb() + "|" + pose.getJoint();
-                uniqueMap.put(key, pose);
-            }
-            for (Pose pose : zip(dst)) {
-                final String key = "KEY$" + pose.getLimb() + "|" + pose.getJoint();
-                if (uniqueMap.containsKey(key)) {
-                    final Pose exist = uniqueMap.get(key);
-                    uniqueMap.put(
-                            key,
-                            new Pose(
-                                    pose.getLimb(),
-                                    pose.getJoint(),
-                                    BigDecimal.valueOf(exist.getRadian())
-                                            .add(BigDecimal.valueOf(pose.getRadian()))
-                                            .doubleValue()
-                            )
-                    );
-                } else {
-                    uniqueMap.put(key, pose);
-                }
-            }
-            return uniqueMap.values().toArray(new Pose[uniqueMap.size()]);
+        public Pose[] operate(Pose[]... arguments) {
+            final Map<Pose.Key, Pose> uniqueMap = new LinkedHashMap<>();
+            Arrays.stream(arguments).forEach(argument -> {
+                Arrays.stream(argument).forEach(pose -> {
+                    final Pose.Key poseKey = pose.getPoseKey();
+                    if (uniqueMap.containsKey(poseKey)) {
+                        final Pose exist = uniqueMap.get(poseKey);
+                        uniqueMap.put(
+                                poseKey,
+                                new Pose(
+                                        pose.getLimb(),
+                                        pose.getJoint(),
+                                        BigDecimal.valueOf(exist.getRadian())
+                                                .add(BigDecimal.valueOf(pose.getRadian()))
+                                                .doubleValue()
+                                )
+                        );
+                    } else {
+                        uniqueMap.put(poseKey, pose);
+                    }
+                });
+            });
+            return uniqueMap.values().toArray(new Pose[0]);
         }
-
     }
 
     /**
-     * 并集：src + dst，若src已存在对应(limb,joint)则用dst的进行替换
+     * 合并运算：arguments的所有姿态进行合并，相同的(limb,joint)以最后一次出现的为准
      */
-    class PoseOperationUnion implements PoseOperation {
+    class PoseOperationMerge implements PoseOperation {
 
         @Override
-        public Pose[] operate(Pose[] src, Pose[] dst) {
-            final Pose[] mix = new Pose[src.length + dst.length];
-            arraycopy(src, 0, mix, 0, src.length);
-            arraycopy(dst, 0, mix, src.length, dst.length);
-            return zip(mix);
+        public Pose[] operate(Pose[]... arguments) {
+            final Map<Pose.Key, Pose> uniqueMap = new LinkedHashMap<>();
+            Arrays.stream(arguments).forEach(argument -> {
+                Arrays.stream(argument).forEach(pose -> {
+                    uniqueMap.put(pose.getPoseKey(), pose);
+                });
+            });
+            return uniqueMap.values().toArray(new Pose[0]);
         }
 
-    }
-
-    /**
-     * 替换：dst替换src
-     */
-    class PoseOperationReplace implements PoseOperation {
-
-        @Override
-        public Pose[] operate(Pose[] src, Pose[] dst) {
-            return dst;
-        }
-    }
-
-    /**
-     * 压缩目标
-     *
-     * @param src 目标
-     * @return 压缩结果
-     */
-    default Pose[] zip(Pose[] src) {
-        final Map<String, Pose> uniqueMap = new LinkedHashMap<>();
-        for (Pose pose : src) {
-            final String key = "KEY$" + pose.getLimb() + "|" + pose.getJoint();
-            uniqueMap.put(key, pose);
-        }
-        return uniqueMap.values().toArray(new Pose[uniqueMap.size()]);
     }
 
 }

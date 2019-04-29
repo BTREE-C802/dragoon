@@ -2,7 +2,7 @@ package com.github.ompc.robot.hexapod.dragoon.component.gait.impl;
 
 import com.github.ompc.robot.hexapod.dragoon.component.gait.Gait;
 import com.github.ompc.robot.hexapod.dragoon.component.gait.GaitCtlCom;
-import com.github.ompc.robot.hexapod.dragoon.device.ServoCtlPiDev;
+import com.github.ompc.robot.hexapod.dragoon.device.servo.ServoPiDev;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -23,7 +23,7 @@ public class GaitCtlComImpl implements GaitCtlCom, Runnable, InitializingBean {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private ServoCtlPiDev servoCtlPiDev;
+    private ServoPiDev servoPiDev;
 
     private final GaitServoMapper gaitServoMapper = new GaitServoMapper();
 
@@ -71,9 +71,9 @@ public class GaitCtlComImpl implements GaitCtlCom, Runnable, InitializingBean {
 
 
     // 转换为舵机控制命令
-    private ServoCtlPiDev.ServoCmd[] getCmds(final Gait gait) {
+    private ServoPiDev.ServoCmd[] getCmds(final Gait gait) {
         return gait.getPoses().stream()
-                .map(pose -> new ServoCtlPiDev.ServoCmd(
+                .map(pose -> new ServoPiDev.ServoCmd(
                         gaitServoMapper.getServoIndex(
                                 pose.getLimb(),
                                 pose.getJoint()
@@ -81,7 +81,7 @@ public class GaitCtlComImpl implements GaitCtlCom, Runnable, InitializingBean {
                         pose.getRadian()
                 ))
                 .collect(Collectors.toList())
-                .toArray(new ServoCtlPiDev.ServoCmd[]{});
+                .toArray(new ServoPiDev.ServoCmd[]{});
     }
 
 
@@ -115,7 +115,7 @@ public class GaitCtlComImpl implements GaitCtlCom, Runnable, InitializingBean {
                         /*
                          * 发送舵机命令
                          */
-                        servoCtlPiDev.control(
+                        servoPiDev.control(
                                 gait.getDurationMs(),
                                 getCmds(gait)
                         );

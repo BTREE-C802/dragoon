@@ -7,8 +7,9 @@ import com.google.gson.GsonBuilder;
 
 import java.util.Collection;
 
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.builder.PoseOperation.addition;
+import static com.github.ompc.robot.hexapod.dragoon.component.gait.builder.PoseOperation.merge;
 import static java.util.Arrays.asList;
-import static java.util.Arrays.stream;
 
 /**
  * 步态构造
@@ -19,9 +20,6 @@ public class GaitBuilder {
      * 空步态
      */
     private static final Gait EMPTY_GAIT = new Gait(-1);
-    private static final PoseOperation additionOp = new PoseOperation.PoseOperationAddition();
-    private static final PoseOperation unionOp = new PoseOperation.PoseOperationUnion();
-    private static final PoseOperation replaceOp = new PoseOperation.PoseOperationReplace();
 
     /*
      * 初始步态
@@ -29,7 +27,7 @@ public class GaitBuilder {
     private final Gait main;
 
     private Gait currentGait;
-    private Pose[] finallyPoses;
+    private Pose[] finallyPoses = new Pose[0];
 
 
     /**
@@ -67,17 +65,12 @@ public class GaitBuilder {
     }
 
     public GaitBuilder addition(Pose[] poses) {
-        computeCurrentGaitPose(additionOp, currentGait.getPoses(), poses);
+        computeCurrentGaitPose(addition, currentGait.getPoses(), poses);
         return this;
     }
 
-    public GaitBuilder union(Pose[] poses) {
-        computeCurrentGaitPose(unionOp, currentGait.getPoses(), poses);
-        return this;
-    }
-
-    public GaitBuilder replace(Pose[] poses) {
-        computeCurrentGaitPose(replaceOp, currentGait.getPoses(), poses);
+    public GaitBuilder merge(Pose[] poses) {
+        computeCurrentGaitPose(merge, currentGait.getPoses(), poses);
         return this;
     }
 
@@ -89,10 +82,10 @@ public class GaitBuilder {
     public static void main(String... args) {
 
         final Gait gait = new GaitBuilder(1000)
-                .replace(PoseOperations.stand(50))
+                .merge(PoseOperations.stand(50))
                 .newGait(500)
-                .replace(PoseOperations.stand(50))
-                .union(PoseOperations.stand(50))
+                .merge(PoseOperations.stand(50))
+                .addition(PoseOperations.stand(50))
                 .build();
 
         final Gson gson = new GsonBuilder().setPrettyPrinting().create();

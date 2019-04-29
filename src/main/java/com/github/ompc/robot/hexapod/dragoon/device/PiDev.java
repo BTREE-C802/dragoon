@@ -15,7 +15,7 @@ public interface PiDev {
         /**
          * 舵机控制
          */
-        SERVO_CTL
+        SERVO
 
     }
 

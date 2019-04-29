@@ -1,9 +1,10 @@
-package com.github.ompc.robot.hexapod.dragoon.device.impl;
+package com.github.ompc.robot.hexapod.dragoon.device.servo.impl;
 
 import com.github.ompc.robot.hexapod.dragoon.component.EnvCom;
 import com.github.ompc.robot.hexapod.dragoon.device.PiDevException;
-import com.github.ompc.robot.hexapod.dragoon.device.PulseWidthComputer;
-import com.github.ompc.robot.hexapod.dragoon.device.ServoCtlPiDev;
+import com.github.ompc.robot.hexapod.dragoon.device.MockPiSerial;
+import com.github.ompc.robot.hexapod.dragoon.device.servo.PulseWidthComputer;
+import com.github.ompc.robot.hexapod.dragoon.device.servo.ServoPiDev;
 import com.pi4j.io.serial.Baud;
 import com.pi4j.io.serial.Serial;
 import com.pi4j.io.serial.SerialConfig;
@@ -22,7 +23,7 @@ import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.ArrayUtils.isEmpty;
 
 @Component
-public class ServoCtlPiDevImpl implements ServoCtlPiDev, InitializingBean {
+public class ServoPiDevImpl implements ServoPiDev, InitializingBean {
 
     private static final byte[] MAGIC_CODE = {0x55, 0x55};
     private static final byte CMD_SERVO_MOVE = 0x03;
@@ -157,6 +158,6 @@ public class ServoCtlPiDevImpl implements ServoCtlPiDev, InitializingBean {
 
     @Override
     public Type getType() {
-        return Type.SERVO_CTL;
+        return Type.SERVO;
     }
 }

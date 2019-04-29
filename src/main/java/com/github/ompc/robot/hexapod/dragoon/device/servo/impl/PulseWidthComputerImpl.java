@@ -1,6 +1,6 @@
-package com.github.ompc.robot.hexapod.dragoon.device.impl;
+package com.github.ompc.robot.hexapod.dragoon.device.servo.impl;
 
-import com.github.ompc.robot.hexapod.dragoon.device.PulseWidthComputer;
+import com.github.ompc.robot.hexapod.dragoon.device.servo.PulseWidthComputer;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -18,20 +18,21 @@ public class PulseWidthComputerImpl implements PulseWidthComputer {
 
     @Override
     public int compute(int servoIndex, double radian) {
-        switch (servoIndex) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-                return computePulseWidth(RADIAN_MAX.subtract(BigDecimal.valueOf(radian)));
-            default:
-                return computePulseWidth(BigDecimal.valueOf(radian));
-        }
+//        switch (servoIndex) {
+//            case 1:
+//            case 2:
+//            case 3:
+//            case 4:
+//            case 5:
+//            case 6:
+//            case 7:
+//            case 8:
+//            case 9:
+//                return computePulseWidth(RADIAN_MAX.subtract(BigDecimal.valueOf(radian)));
+//            default:
+//                return computePulseWidth(BigDecimal.valueOf(radian));
+//        }
+        return computePulseWidth(BigDecimal.valueOf(radian));
     }
 
     // 弧度换算脉宽

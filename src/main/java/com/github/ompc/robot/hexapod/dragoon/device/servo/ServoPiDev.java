@@ -1,9 +1,12 @@
-package com.github.ompc.robot.hexapod.dragoon.device;
+package com.github.ompc.robot.hexapod.dragoon.device.servo;
+
+import com.github.ompc.robot.hexapod.dragoon.device.PiDev;
+import com.github.ompc.robot.hexapod.dragoon.device.PiDevException;
 
 /**
  * 舵机控制组件
  */
-public interface ServoCtlPiDev extends PiDev {
+public interface ServoPiDev extends PiDev {
 
     /**
      * 控制舵机

@@ -1,4 +1,4 @@
-package com.github.ompc.robot.hexapod.dragoon.device;
+package com.github.ompc.robot.hexapod.dragoon.device.servo;
 
 /**
  * 舵机脉宽计算器

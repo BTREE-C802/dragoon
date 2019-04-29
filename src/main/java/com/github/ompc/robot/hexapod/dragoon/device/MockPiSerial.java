@@ -1,4 +1,4 @@
-package com.github.ompc.robot.hexapod.dragoon.device.impl;
+package com.github.ompc.robot.hexapod.dragoon.device;
 
 import com.pi4j.io.serial.*;
 import org.slf4j.Logger;

@@ -9,7 +9,7 @@ import java.util.NoSuchElementException;
 /**
  * 步态(组)
  */
-public class Gait {
+public class Gait implements Iterable<Gait> {
 
     private final long durationMs;
     private final Collection<Pose> poses = new ArrayList<>();
@@ -65,6 +65,7 @@ public class Gait {
      *
      * @return 步态迭代器
      */
+    @Override
     public @NotNull Iterator<Gait> iterator() {
         return new Iterator<Gait>() {
 

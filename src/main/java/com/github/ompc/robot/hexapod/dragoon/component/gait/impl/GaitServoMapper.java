@@ -2,6 +2,8 @@ package com.github.ompc.robot.hexapod.dragoon.component.gait.impl;
 
 import com.github.ompc.robot.hexapod.dragoon.component.gait.Joint;
 import com.github.ompc.robot.hexapod.dragoon.component.gait.Limb;
+import com.github.ompc.robot.hexapod.dragoon.component.gait.Pose;
+import com.github.ompc.robot.hexapod.dragoon.component.gait.Pose.Key;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -71,30 +73,6 @@ class GaitServoMapper {
 
     public Integer getServoIndex(Limb limb, Joint joint) {
         return gaitServoMap.get(new Key(limb, joint));
-    }
-
-
-    class Key {
-
-        final Limb limb;
-        final Joint joint;
-
-        Key(Limb limb, Joint joint) {
-            this.limb = limb;
-            this.joint = joint;
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            return other instanceof Key
-                    && ((Key) other).limb == limb
-                    && ((Key) other).joint == joint;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(limb, joint);
-        }
     }
 
 }

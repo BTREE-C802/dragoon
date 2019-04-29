@@ -2,6 +2,7 @@ package com.github.ompc.robot.hexapod.dragoon.component.gait;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Joint.JOINT_ALL;
 import static com.github.ompc.robot.hexapod.dragoon.component.gait.Limb.LIMB_ALL;
@@ -28,8 +29,8 @@ public class Pose {
      * @param radian 弧度
      */
     public Pose(final Limb limb,
-                 final Joint joint,
-                 final double radian) {
+                final Joint joint,
+                final double radian) {
         this.limb = limb;
         this.joint = joint;
         this.radian = radian;
@@ -61,6 +62,48 @@ public class Pose {
     public double getRadian() {
         return radian;
     }
+
+    public Pose.Key getPoseKey() {
+        return new Pose.Key(limb, joint);
+    }
+
+
+    /**
+     * PoseKey
+     */
+    public static class Key {
+
+        private final Limb limb;
+        private final Joint joint;
+
+
+        public Key(Limb limb, Joint joint) {
+            this.limb = limb;
+            this.joint = joint;
+        }
+
+        public Limb getLimb() {
+            return limb;
+        }
+
+        public Joint getJoint() {
+            return joint;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return other instanceof Key
+                    && ((Key) other).limb == limb
+                    && ((Key) other).joint == joint;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(limb, joint);
+        }
+
+    }
+
 
     /**
      * 姿态
