@@ -109,7 +109,7 @@ public class GaitCtlComImpl implements GaitCtlCom, Runnable, InitializingBean {
 
                         // 忽略执行时间无效的步态，根本没有时间给机器人执行
                         if (gait.getDurationMs() <= 0) {
-                            return;
+                            continue;
                         }
 
                         /*
