@@ -34,8 +34,10 @@ public class GaitTestCase extends SpringBootSupportTestCase {
     @Test
     public void test() throws MessageComException, InterruptedException {
 
-        final Gait gait = new GaitBuilder()
-                .merge(PoseOperations.stand(50))
+        final Gait gait = new GaitBuilder(1000)
+                .merge(
+                        PoseOperations.stand(10)
+                )
                 .build();
 
         final String json = gson.toJson(new RemoteCmd<>(RemoteCmd.Type.GAIT, gait));

@@ -115,4 +115,8 @@ public class PoseSelector {
 
     }
 
+    public static PoseSelector select() {
+        return new PoseSelector();
+    }
+
 }
