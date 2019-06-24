@@ -20,7 +20,7 @@ public class PoseOperations {
     public static final BigDecimal RAD_PI_QUARTER = RAD_PI.divide(valueOf(4), BigDecimal.ROUND_HALF_EVEN);
 
     public static final double LIMB_UPPER_LENGTH = 50.0d;
-    public static final double LIMB_LOWER_LENGTH = 50.0d;
+    public static final double LIMB_LOWER_LENGTH = 70.0d;
     public static final double LIMB_LENGTH = LIMB_UPPER_LENGTH + LIMB_LOWER_LENGTH;
     public static final BigDecimal RAD_ANK_DEVIATION = RAD_PI_QUARTER;
 
@@ -41,6 +41,50 @@ public class PoseOperations {
                 .limb(LIMB_ALL_L).joint(ANK).radian(RAD_PI.subtract(radianOfA6))
                 .limb().joint(HIP).radian(RAD_PI_HALF)
                 .selected();
+    }
+
+    public static final Pose[] limbDown(final Limb limb, final double radian) {
+        return limbUp(limb, -1 * radian);
+    }
+
+    public static final Pose[] limbUp(final Limb limb, final double radian) {
+        switch (limb) {
+            case L_F:
+            case L_M:
+            case L_H:
+                return select()
+                        .limb(limb).joint(KNE).radian(radian)
+                        .selected();
+            case R_F:
+            case R_M:
+            case R_H:
+            default:
+                return select()
+                        .limb(limb).joint(KNE).radian(-1 * radian)
+                        .selected();
+        }
+    }
+
+    public static final Pose[] limbBack(final Limb limb, final double radian) {
+        return limbFront(limb, -1 * radian);
+    }
+
+    public static final Pose[] limbFront(final Limb limb, final double radian) {
+        switch (limb) {
+            case L_F:
+            case L_M:
+            case L_H:
+                return select()
+                        .limb(limb).joint(HIP).radian(-1 * radian)
+                        .selected();
+            case R_F:
+            case R_M:
+            case R_H:
+            default:
+                return select()
+                        .limb(limb).joint(HIP).radian(radian)
+                        .selected();
+        }
     }
 
 }
